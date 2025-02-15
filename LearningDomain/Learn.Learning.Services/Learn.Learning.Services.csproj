@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AIDomain\Learn.AI.Client\Learn.AI.Client.csproj" />
+    <ProjectReference Include="..\Learn.Learning.Models\Learn.Learning.Models.csproj" />
+    <ProjectReference Include="..\Learn.Learning.Repository\Learn.Learning.Repository.csproj" />
+  </ItemGroup>
+
+</Project>

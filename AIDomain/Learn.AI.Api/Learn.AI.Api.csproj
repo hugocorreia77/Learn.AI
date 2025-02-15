@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>2b5eece5-0bb3-4b45-91d2-696a6cf5d62f</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Lear.Core.Api\Learn.Core.Api.csproj" />
+    <ProjectReference Include="..\Learn.AI.Repository.MongoDb\Learn.AI.Repository.MongoDb.csproj" />
+    <ProjectReference Include="..\Learn.AI.Services\Learn.AI.Services.csproj" />
+  </ItemGroup>
+
+</Project>

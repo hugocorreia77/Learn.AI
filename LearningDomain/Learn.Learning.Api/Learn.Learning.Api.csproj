@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AIDomain\Learn.AI.Client\Learn.AI.Client.csproj" />
+    <ProjectReference Include="..\..\Core\Lear.Core.Api\Learn.Core.Api.csproj" />
+    <ProjectReference Include="..\..\Core\Learn.Core.Shared\Learn.Core.Shared.csproj" />
+    <ProjectReference Include="..\Learn.Learning.Repository.MongoDb\Learn.Learning.Repository.MongoDb.csproj" />
+    <ProjectReference Include="..\Learn.Learning.Services\Learn.Learning.Services.csproj" />
+  </ItemGroup>
+
+</Project>

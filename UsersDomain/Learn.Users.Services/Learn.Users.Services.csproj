@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Learn.Users.Models\Learn.Users.Models.csproj" />
+    <ProjectReference Include="..\Learn.Users.Repository\Learn.Users.Repository.csproj" />
+  </ItemGroup>
+
+</Project>
