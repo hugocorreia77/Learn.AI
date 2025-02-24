@@ -1,4 +1,5 @@
 using Learn.Core.Api.Extensions;
+using Learn.Security.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,10 @@ builder.Services.ConfigureControllers()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.AddRepositories()
+        .AddServices();
+
 
 var app = builder.Build();
 

@@ -1,22 +1,25 @@
 using Learn.AI.Client;
 using Learn.Core.Api.Extensions;
+using Learn.Core.Shared.Security.Extensions;
 using Learn.Learning.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.AddLearningAuthentication();
 builder.Services.ConfigureControllers()
-                .ConfigureConventions();
+                .ConfigureConventions()
+                .ConfigureSwaggerGen();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 builder.AddRepositories()
         .AddServices();
 
 builder.Services.AddAIClient(builder.Configuration);
+
+
 
 var app = builder.Build();
 
@@ -28,7 +31,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

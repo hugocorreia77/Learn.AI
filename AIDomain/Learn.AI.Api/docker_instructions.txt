@@ -1,0 +1,25 @@
+﻿#Run docker in dev environment
+docker run --rm -it 
+#Ports Mapping
+-p 5000:8080 
+-p 5001:8081 
+#Environment Variables
+-e ASPNETCORE_ENVIRONMENT="Development" 
+-e ASPNETCORE_HTTP_PORTS:8080 
+-e ASPNETCORE_HTTPS_PORTS=8081 
+#Local Dev Https certificate
+-e ASPNETCORE_Kestrel__Certificates__Default__Password="hugocorreia77" 
+-e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx 
+-v $env:USERPROFILE\.aspnet\https:/https/ 
+#Container name
+--name learn-ai-api-dev 
+#Network to be possible to connect to other containers
+--network learning-network
+#Image
+learnaiapi:latest
+
+
+Ex:
+docker run --rm -it -p 5000:8080 -p 5001:8081 -e ASPNETCORE_ENVIRONMENT="Development" -e ASPNETCORE_HTTP_PORTS:8080 -e ASPNETCORE_HTTPS_PORTS=8081 -e ASPNETCORE_Kestrel__Certificates__Default__Password="hugocorreia77" -e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx -v $env:USERPROFILE\.aspnet\https:/https/ --name learn-ai-api-dev --network learning-network  learnaiapi:latest
+
+

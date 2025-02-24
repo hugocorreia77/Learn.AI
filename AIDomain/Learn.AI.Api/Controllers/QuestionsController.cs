@@ -1,10 +1,12 @@
 ﻿using Learn.AI.Models.Questions.Result;
 using Learn.AI.Services.Providers.Interfaces;
 using Learn.Core.Shared.Models.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Learn.AI.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class QuestionsController(IAIProvider provider) : Controller

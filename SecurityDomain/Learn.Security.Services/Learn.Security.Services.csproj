@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\UsersDomain\Learn.Users.Repostory.MongoDb\Learn.Users.Repository.MongoDb.csproj" />
     <ProjectReference Include="..\Learn.Security.Models\Learn.Security.Models.csproj" />
     <ProjectReference Include="..\Learn.Security.Repository\Learn.Security.Repository.csproj" />
   </ItemGroup>

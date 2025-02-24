@@ -1,11 +1,21 @@
+using Learn.Core.Shared.Security.Extensions;
+using Learn.Users.Api.Extensions;
+using Learn.Core.Api.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.ConfigureControllers()
+                .ConfigureConventions();
 
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.AddRepositories()
+        .AddServices();
+
+builder.Services.AddSecurity();
 
 var app = builder.Build();
 

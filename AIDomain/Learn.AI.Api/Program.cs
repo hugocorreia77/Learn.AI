@@ -11,19 +11,21 @@ builder.Services.ConfigureControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.AddRepositories()
-        .AddServices();
+builder.AddServices();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Local-Docker"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsEnvironment("Local-Docker"))
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
 

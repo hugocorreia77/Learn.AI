@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Lear.Core.Api\Learn.Core.Api.csproj" />
+    <ProjectReference Include="..\Learn.Users.Repostory.MongoDb\Learn.Users.Repository.MongoDb.csproj" />
     <ProjectReference Include="..\Learn.Users.Services\Learn.Users.Services.csproj" />
   </ItemGroup>
 

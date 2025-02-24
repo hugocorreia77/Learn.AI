@@ -16,4 +16,8 @@
     <Folder Include="Properties\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Learn.Core.Shared\Learn.Core.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

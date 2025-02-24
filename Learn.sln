@@ -103,7 +103,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learn.AI.Repository.MongoDb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learn.Core.Api", "Core\Lear.Core.Api\Learn.Core.Api.csproj", "{13C531EC-8B5B-452D-B858-C199D902F4D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learn.Learning.Repository.MongoDb", "LearningDomain\Learn.Learning.Repository.MongoDb\Learn.Learning.Repository.MongoDb.csproj", "{A4B5CB8B-747E-4239-816D-06D2820A109E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learn.Learning.Repository.MongoDb", "LearningDomain\Learn.Learning.Repository.MongoDb\Learn.Learning.Repository.MongoDb.csproj", "{A4B5CB8B-747E-4239-816D-06D2820A109E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learn.Users.Repository.MongoDb", "UsersDomain\Learn.Users.Repostory.MongoDb\Learn.Users.Repository.MongoDb.csproj", "{4E533DD0-9818-442E-B4BB-334249E8637D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -211,6 +213,10 @@ Global
 		{A4B5CB8B-747E-4239-816D-06D2820A109E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4B5CB8B-747E-4239-816D-06D2820A109E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4B5CB8B-747E-4239-816D-06D2820A109E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E533DD0-9818-442E-B4BB-334249E8637D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E533DD0-9818-442E-B4BB-334249E8637D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E533DD0-9818-442E-B4BB-334249E8637D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E533DD0-9818-442E-B4BB-334249E8637D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -262,6 +268,7 @@ Global
 		{2C3038FD-0511-40F6-9AD3-510397CFA6C9} = {874718D6-7F1A-4E5A-96ED-3887E38C221F}
 		{13C531EC-8B5B-452D-B858-C199D902F4D3} = {6D9952B9-F6C5-4BFA-A072-2B86E27067B6}
 		{A4B5CB8B-747E-4239-816D-06D2820A109E} = {E9B9D868-4319-4AAC-8053-F095F9FCA094}
+		{4E533DD0-9818-442E-B4BB-334249E8637D} = {D51EB835-CB1A-4538-B4FB-199269C5120E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {79EED19E-6C04-497E-AE45-4143C6ACBB81}

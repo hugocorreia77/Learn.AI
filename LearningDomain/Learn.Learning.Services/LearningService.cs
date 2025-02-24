@@ -1,6 +1,7 @@
 ﻿using Learn.AI.Client.Abstractions;
 using Learn.Core.Shared.Extensions;
 using Learn.Core.Shared.Models.Response;
+using Learn.Core.Shared.Services.Abstractions;
 using Learn.Learning.Models.Questions.Input;
 using Learn.Learning.Models.Questions.Output;
 using Learn.Learning.Repository.Models;
@@ -10,12 +11,12 @@ using Learn.Learning.Services.Utils;
 
 namespace Learn.Learning.Services
 {
-    public class LearningService(IQuestionsRepository questionsRepository, ILearnAIClient aiClient) 
+    public class LearningService(IUserContextService userContextService, IQuestionsRepository questionsRepository, ILearnAIClient aiClient) 
         : ILearningService
     {
         public async Task<BaseContentResponse<CreateQuestionResult>> CreateQuestion(CreateQuestionInput createQuestion, CancellationToken cancellationToken)
         {
-            var question = await aiClient.GetNewQuestionAsync(createQuestion.Category, "pt-PT", cancellationToken);
+            var question = await aiClient.GetNewQuestionAsync(createQuestion.Category, userContextService.GetSelectedLanguage(), cancellationToken);
 
             if (question is not null 
                 && question.Success 
@@ -32,12 +33,7 @@ namespace Learn.Learning.Services
                     {
                         Name = question.Data.Category
                     },
-                    CreatedBy = new Core.Shared.Models.User.UserReference
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Teste user",
-                        Username = "testUser"
-                    },
+                    CreatedBy = userContextService.GetUser(),
                     CreatedOn = DateTime.Now,
                     QuestionText = question.Data.QuestionText,
                     CorrectAnswer = question.Data.CorrectAnswer,
@@ -45,12 +41,11 @@ namespace Learn.Learning.Services
                     Explanation = question.Data.Explanation,
                     Options = question.Data.Options?.Select(s => new Repository.Models.QuestionOption
                     {
-
                         Text = s.Text,
                         IsCorrect = s.IsCorrect
                     }).ToList() ?? [],
                     QuestionType = question.Data.QuestionType.MapToModel(),
-                    Tags = ["teste", createQuestion.Category]
+                    Tags = [createQuestion.Category]
                 };
 
                 var result = await questionsRepository.CreateQuestionAsync(qst, cancellationToken);
