@@ -16,6 +16,7 @@ namespace Learn.AI.Client
 
         public async Task<BaseContentResponse<QuestionResult>?> GetNewQuestionAsync(string category, string language, CancellationToken cancellationToken)
         {
+
             var questionResult = await AiClient.GetAsync($"questions?category={category}&language={language}", cancellationToken);
 
             var questionAsString = await questionResult.Content.ReadAsStringAsync(cancellationToken);

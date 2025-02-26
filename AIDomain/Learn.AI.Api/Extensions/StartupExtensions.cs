@@ -16,7 +16,7 @@ namespace Learn.AI.Api.Extensions
                     builder.Configuration.GetSection("MongoDbSettings")
             );
             builder.Services.AddTransient<IAIRepository, AIMongoDbRepository>();
-
+                
             return builder;
         }
         #endregion

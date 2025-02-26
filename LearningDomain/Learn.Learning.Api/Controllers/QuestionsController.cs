@@ -1,4 +1,5 @@
 ﻿using Learn.Core.Shared.Models.Response;
+using Learn.Core.Shared.Services.Abstractions;
 using Learn.Learning.Models.Questions.Output;
 using Learn.Learning.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -17,15 +18,11 @@ namespace Learn.Learning.Api.Controllers
             [FromQuery] string category,
             CancellationToken cancellationToken)
         {
-            //if (string.IsNullOrEmpty(language))
-            //{
-            //    language = "pt-PT";
-            //}
 
             var result = await learningService.CreateQuestion(
-                new Models.Questions.Input.CreateQuestionInput 
-                { 
-                    Category = category 
+                new Models.Questions.Input.CreateQuestionInput
+                {
+                    Category = category
                 }
             , cancellationToken);
 

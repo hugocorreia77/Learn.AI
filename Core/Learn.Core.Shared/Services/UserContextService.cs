@@ -22,9 +22,13 @@ namespace Learn.Core.Shared.Services
             var claimName = _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Name)?.Value;
             var claimUsername = _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.UniqueName)?.Value;
 
-            if (string.IsNullOrEmpty(claimId) || !Guid.TryParse(claimId, out var userId))
+            if (string.IsNullOrEmpty(claimId))
             {
                 throw new Exception("JWT token is invalid. Id not found.");
+            }
+            if (!Guid.TryParse(claimId, out var userId))
+            {
+                throw new Exception("JWT token is invalid. Id can not be parsed.");
             }
             if (string.IsNullOrEmpty(claimName))
             {

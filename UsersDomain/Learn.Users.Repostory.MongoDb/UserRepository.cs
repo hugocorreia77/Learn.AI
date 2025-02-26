@@ -27,7 +27,7 @@ namespace Learn.Users.Repository.MongoDb
             _logger = logger;
             var client = new MongoClient(settings.Value.ConnectionString);
             var database = client.GetDatabase(settings.Value.Database);
-            EnsureCollection(database).Wait();
+            EnsureCollection(database).GetAwaiter().GetResult();
             Users = database.GetCollection<User>(COLLECTION_NAME);
         }
         #endregion

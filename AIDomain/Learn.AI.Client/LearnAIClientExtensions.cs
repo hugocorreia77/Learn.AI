@@ -1,5 +1,6 @@
 ﻿using Learn.AI.Client.Abstractions;
 using Learn.Core.Shared.Clients;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,8 +22,16 @@ namespace Learn.AI.Client
 
             services.AddHttpClient<ILearnAIClient, LearnAIClient>(client =>
             {
+                var serviceProvider = services.BuildServiceProvider();
+                var httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
+                var bearerToken = httpContextAccessor?.HttpContext?.Request
+                                      .Headers.Authorization.FirstOrDefault(h => h != null  
+                                                                            && h.StartsWith("bearer ", StringComparison.InvariantCultureIgnoreCase)) ?? string.Empty;
+
                 client.BaseAddress = new Uri(config.Url);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
+                client.DefaultRequestHeaders.Add("Authentication", bearerToken);
+
             }).AddHttpMessageHandler<AuthHeaderHandler>();
 
             return services;
