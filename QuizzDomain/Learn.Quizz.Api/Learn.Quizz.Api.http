@@ -1,0 +1,6 @@
+@Learn.Quizz.Api_HostAddress = http://localhost:5263
+
+GET {{Learn.Quizz.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

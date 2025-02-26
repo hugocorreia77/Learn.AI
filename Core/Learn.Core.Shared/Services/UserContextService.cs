@@ -43,7 +43,7 @@ namespace Learn.Core.Shared.Services
             {
                 Id = userId,
                 Name = claimName,
-                Username = claimName
+                Username = claimUsername
             };
         }
         #endregion

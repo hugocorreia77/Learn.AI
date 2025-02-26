@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AIDomain\Learn.AI.Client\Learn.AI.Client.csproj" />
+    <ProjectReference Include="..\..\Core\Learn.Core.Shared\Learn.Core.Shared.csproj" />
+    <ProjectReference Include="..\Learn.Quizz.Models\Learn.Quizz.Models.csproj" />
+    <ProjectReference Include="..\Learn.Quizz.Repository\Learn.Quizz.Repository.csproj" />
+  </ItemGroup>
+
+</Project>
