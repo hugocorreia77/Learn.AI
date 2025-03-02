@@ -28,9 +28,12 @@ namespace Learn.AI.Client
                                       .Headers.Authorization.FirstOrDefault(h => h != null  
                                                                             && h.StartsWith("bearer ", StringComparison.InvariantCultureIgnoreCase)) ?? string.Empty;
 
+                var language = httpContextAccessor?.HttpContext?.Request.Headers.AcceptLanguage.FirstOrDefault() ?? "pt-PT";
+
                 client.BaseAddress = new Uri(config.Url);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
                 client.DefaultRequestHeaders.Add("Authentication", bearerToken);
+                client.DefaultRequestHeaders.Add("Accept-Language", language);
 
             }).AddHttpMessageHandler<AuthHeaderHandler>();
 

@@ -3,10 +3,13 @@ using Learn.Core.Shared.Models.Response;
 using Learn.Quizz.Models.Quiz.Input;
 using Learn.Quizz.Models.Quiz.Result;
 using Learn.Quizz.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace Learn.Quizz.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class QuizzController : ControllerBase
@@ -21,7 +24,7 @@ namespace Learn.Quizz.Api.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<BaseContentResponse<QuizGameResult>> CreateGameAsync(CreateQuizInput input, CancellationToken cancellationToken)
+        public async Task<BaseContentResponse<QuizGameResult>> Create(CreateQuizInput input, CancellationToken cancellationToken)
         {
             try
             {
@@ -31,15 +34,41 @@ namespace Learn.Quizz.Api.Controllers
             {
                 _logger.LogError(ex, "Exception thrown creating a new quiz.");
                 return new BaseContentResponse<QuizGameResult>()
-                .SetFailed()
-                .AddError("It was not possible to create a new quiz.");
+                    .SetFailed()
+                    .AddError("It was not possible to create a new quiz.");
             }
         }
 
         [HttpPost("Join")]
-        public int Join()
+        public async Task<BaseContentResponse<QuizGameResult>> Join([FromBody] JoinQuizInput input, CancellationToken cancellationToken)
         {
-            return 1;
+            try
+            {
+                return await _quizService.JoinGameAsync(input, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception thrown joining a quiz.");
+                return new BaseContentResponse<QuizGameResult>()
+                    .SetFailed()
+                    .AddError("It was not possible to join a quiz.");
+            }
+        }
+
+        [HttpGet("{quizId}")]
+        public async Task<BaseContentResponse<QuizGameResult>> GetGame([FromQuery] Guid quizId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await _quizService.GetGameAsync(quizId, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception thrown getting the quiz.");
+                return new BaseContentResponse<QuizGameResult>()
+                    .SetFailed()
+                    .AddError("It was not possible to get the quiz.");
+            }
         }
 
     }

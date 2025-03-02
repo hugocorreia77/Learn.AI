@@ -24,6 +24,7 @@ namespace Learn.Quizz.Services
             _aiClient = aiClient;
         }
 
+        #region public async Task<BaseContentResponse<QuizGameResult>> CreateGameAsync(CreateQuizInput input, CancellationToken cancellationToken)
         public async Task<BaseContentResponse<QuizGameResult>> CreateGameAsync(CreateQuizInput input, CancellationToken cancellationToken)
         {
             var code = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 6).ToString();
@@ -41,7 +42,6 @@ namespace Learn.Quizz.Services
             };
 
             var quizResult = await _quizRepository.CreateQuizAsync(quiz, cancellationToken);
-
             if (!quizResult.Success)
             {
                 return new BaseContentResponse<QuizGameResult>
@@ -59,6 +59,7 @@ namespace Learn.Quizz.Services
             {
                 Data = new QuizGameResult
                 {
+                    Id = quizResult.Data.Id,
                     Code = quizResult.Data.Code,
                     Name = quizResult.Data.Name,
                     Owner = quizResult.Data.CreatedBy,
@@ -68,10 +69,106 @@ namespace Learn.Quizz.Services
                 }
             }.SetSucceeded();
         }
+        #endregion
 
+        #region public async Task<BaseContentResponse<QuizGameResult>> JoinGameAsync(JoinQuizInput input, CancellationToken cancellationToken)
+        public async Task<BaseContentResponse<QuizGameResult>> JoinGameAsync(JoinQuizInput input, CancellationToken cancellationToken)
+        {
+            var game = await _quizRepository.GetQuizAsync(input.QuizCode, cancellationToken);
+            if (!game.Success)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Not found");
+            }
+            if(game.Data is null)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Not found");
+            }
+            var quizGame = game.Data;
+
+            var user = _userContextService.GetUser();
+            if(quizGame.Users.Exists(us => us.Id == user.Id))
+            {
+                return new BaseContentResponse<QuizGameResult>
+                {
+                    Data = new QuizGameResult
+                    {
+                        Id = quizGame.Id,
+                        Code = quizGame.Code,
+                        Name = quizGame.Name,
+                        Owner = quizGame.CreatedBy,
+                        Status = quizGame.Status.ToSharedModel(),
+                        NumberOfQuestions = quizGame.Questions.Count,
+                        CurrentQuestion = GetQuestionIndex(quizGame.Questions, GetCurrentQuestion(quizGame.Questions))
+                    }
+                }.SetSucceeded();
+            }
+
+            var quizGameJoined = await _quizRepository.JoinQuizAsync(input.QuizCode, user, cancellationToken);
+            if (!quizGameJoined.Success)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Não foi possível juntar-se ao jogo.");
+            }
+            if (quizGameJoined.Data is null)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Não foi possível juntar-se ao jogo.");
+            }
+            
+            var joinedGame = quizGameJoined.Data;
+            return new BaseContentResponse<QuizGameResult>
+            {
+                Data = new QuizGameResult
+                {
+                    Code = joinedGame.Code,
+                    Status = joinedGame.Status.ToSharedModel(),
+                    Name = joinedGame.Name,
+                    Owner = joinedGame.CreatedBy,
+                    NumberOfQuestions = joinedGame.Questions.Count,
+                    Id = joinedGame.Id,
+                    CurrentQuestion = GetQuestionIndex(joinedGame.Questions, GetCurrentQuestion(joinedGame.Questions))                    
+                }
+            };
+        }
+        #endregion
+
+        #region public async Task<BaseContentResponse<QuizGameResult>> GetGameAsync(Guid quizId, CancellationToken cancellationToken)
+        public async Task<BaseContentResponse<QuizGameResult>> GetGameAsync(Guid quizId, CancellationToken cancellationToken)
+        {
+            var game = await _quizRepository.GetQuizAsync(quizId, cancellationToken);
+            if (!game.Success)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Not found");
+            }
+            if (game.Data is null)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Not found");
+            }
+            var quizGame = game.Data;
+
+            return new BaseContentResponse<QuizGameResult>
+            {
+                Data = new QuizGameResult
+                {
+                    Code = quizGame.Code,
+                    Status = quizGame.Status.ToSharedModel(),
+                    Name = quizGame.Name,
+                    Owner = quizGame.CreatedBy,
+                    NumberOfQuestions = quizGame.Questions.Count,
+                    Id = quizGame.Id,
+                    CurrentQuestion = GetQuestionIndex(quizGame.Questions, GetCurrentQuestion(quizGame.Questions))
+                }
+            };
+        }
+        #endregion
+
+
+        #region Private
+
+        #region private static Question? GetCurrentQuestion(List<Question> questions)
         private static Question? GetCurrentQuestion(List<Question> questions)
             => questions.Find(f => f.Status == QuestionStatus.Waiting);
+        #endregion
 
+        #region private static int GetQuestionIndex(List<Question> questions, Question? question)
         private static int GetQuestionIndex(List<Question> questions, Question? question)
         {
             if(question is null)
@@ -81,50 +178,45 @@ namespace Learn.Quizz.Services
 
             return questions.IndexOf(question);
         }
+        #endregion
 
+        #region private async Task<List<Question>> GetQuestionsForQuizAsync(List<string> categories, int totalQuestions, CancellationToken cancellationToken)
         private async Task<List<Question>> GetQuestionsForQuizAsync(List<string> categories, int totalQuestions, CancellationToken cancellationToken)
         {
             List<Question> questions = [];
             var language = _userContextService.GetSelectedLanguage();
             var rnd = new Random();
 
-            // Get random index
-            for (int i=0; i< totalQuestions; i++)
+            var questionsResult = await _aiClient.GetQuestionsAsync(totalQuestions, categories, cancellationToken);
+            if (!questionsResult.Success)
             {
-                int index = rnd.Next(categories.Count);
-                var category = categories[index];
-
-                var questionResponse = await _aiClient.GetNewQuestionAsync(category, language, cancellationToken);
-                if(questionResponse is null || !questionResponse.Success || questionResponse.Data is null)
-                {
-                    continue;
-                }
-
-                questions.Add(new Question
-                {
-                    Category = new QuestionCategory
-                    {
-                        Name = category,
-                    },
-                    Language = new Language
-                    {
-                        AcceptLanguage = questionResponse.Data.Language.AcceptLanguage,
-                        LanguageName = questionResponse.Data.Language.LanguageName
-                    },
-                    QuestionText = questionResponse.Data.QuestionText,
-                    CorrectAnswer = questionResponse.Data.CorrectAnswer,
-                    Explanation = questionResponse.Data.Explanation,
-                    Status = QuestionStatus.Waiting,
-                    Options = questionResponse.Data.Options?.Select(s => new QuestionOption
-                    {
-                        IsCorrect = s.IsCorrect,
-                        Text = s.Text,
-                    }).ToList() ?? [],
-                });
+                return [];
             }
 
-            return questions;
+            return questionsResult.Data?.Select(s => new Question
+            {
+                Category = new QuestionCategory
+                {
+                    Name = s.Category,
+                },
+                Language = new Language
+                {
+                    AcceptLanguage = s.Language.AcceptLanguage,
+                    LanguageName = s.Language.LanguageName
+                },
+                QuestionText = s.QuestionText,
+                CorrectAnswer = s.CorrectAnswer,
+                Explanation = s.Explanation,
+                Status = QuestionStatus.Waiting,
+                Options = s.Options?.Select(s => new QuestionOption
+                {
+                    IsCorrect = s.IsCorrect,
+                    Text = s.Text,
+                }).ToList() ?? [],
+            }).ToList() ?? [];
         }
+        #endregion
 
+        #endregion
     }
 }

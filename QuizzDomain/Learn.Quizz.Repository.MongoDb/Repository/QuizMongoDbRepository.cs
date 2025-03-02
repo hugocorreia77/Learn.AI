@@ -1,11 +1,14 @@
 ﻿using Learn.Core.Shared.Extensions;
 using Learn.Core.Shared.Models.Response;
+using Learn.Core.Shared.Models.User;
 using Learn.Core.Shared.Repository.Configurations;
+using Learn.Core.Shared.Services.Abstractions;
 using Learn.Quizz.Repository.Models;
 using Learn.Quizz.Repository.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Learn.Quizz.Repository.MongoDb.Repository
@@ -78,5 +81,64 @@ namespace Learn.Quizz.Repository.MongoDb.Repository
             };
         }
 
+        public async Task<BaseContentResponse<QuizzGame>> GetQuizAsync(string quizCode, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var builder = Builders<QuizzGame>.Filter;
+                var filter = builder.Eq(q => q.Code, quizCode);
+                var result = await QuizzGames.Find(filter).SingleOrDefaultAsync(cancellationToken);
+                return new BaseContentResponse<QuizzGame>
+                {
+                    Data = result
+                }.SetSucceeded();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An exception occurred while trying to find the game.");
+                return new BaseContentResponse<QuizzGame>().SetFailed().AddError(ex.Message);
+            }
+        }
+
+        public async Task<BaseContentResponse<QuizzGame>> JoinQuizAsync(string quizCode, UserReference user, CancellationToken cancellationToken)
+        {
+            var builder = Builders<QuizzGame>.Filter;
+            var filter = builder.Eq(q => q.Code, quizCode);
+            var quizGame = await QuizzGames.Find(filter).SingleOrDefaultAsync(cancellationToken);
+
+            if (quizGame.Users.Exists(e => e.Id == user.Id))
+            {
+                return new BaseContentResponse<QuizzGame> { Data = quizGame }.SetSucceeded();
+            }
+
+            var update = Builders<QuizzGame>.Update.Push(nameof(QuizzGame.Users), user);
+
+            _ = await QuizzGames.UpdateOneAsync(filter, update);
+
+            var updatedQuizGame = await QuizzGames.Find(filter).SingleOrDefaultAsync(cancellationToken);
+            return new BaseContentResponse<QuizzGame>
+            {
+                Data = updatedQuizGame
+            }.SetSucceeded();
+        }
+
+        public async Task<BaseContentResponse<QuizzGame>> GetQuizAsync(Guid quizId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var builder = Builders<QuizzGame>.Filter;
+                var filter = builder.Eq(q => q.Id, quizId);
+                var result = await QuizzGames.Find(filter).SingleOrDefaultAsync(cancellationToken);
+                return new BaseContentResponse<QuizzGame>
+                {
+                    Data = result
+                }.SetSucceeded();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An exception occurred while trying to find the game.");
+                return new BaseContentResponse<QuizzGame>().SetFailed().AddError(ex.Message);
+            }
+        }
     }
 }

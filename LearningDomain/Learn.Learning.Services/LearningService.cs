@@ -16,7 +16,7 @@ namespace Learn.Learning.Services
     {
         public async Task<BaseContentResponse<CreateQuestionResult>> CreateQuestion(CreateQuestionInput createQuestion, CancellationToken cancellationToken)
         {
-            var question = await aiClient.GetNewQuestionAsync(createQuestion.Category, userContextService.GetSelectedLanguage(), cancellationToken);
+            var question = await aiClient.GetQuestionAsync(createQuestion.Category, cancellationToken);
 
             if (question is not null 
                 && question.Success 
@@ -58,7 +58,7 @@ namespace Learn.Learning.Services
                         {
                             Id = result.Data.Id,
                             Category = result.Data.Category.Name,
-                            Language = new Learn.Learning.Models.Language
+                            Language = new Models.Language
                             {
                                 AcceptLanguage = result.Data.Language.AcceptLanguage,
                                 LanguageName = result.Data.Language.LanguageName

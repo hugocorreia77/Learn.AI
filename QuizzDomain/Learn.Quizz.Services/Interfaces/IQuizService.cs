@@ -7,5 +7,7 @@ namespace Learn.Quizz.Services.Interfaces
     public interface IQuizService
     {
         Task<BaseContentResponse<QuizGameResult>> CreateGameAsync(CreateQuizInput input, CancellationToken cancellationToken);
+        Task<BaseContentResponse<QuizGameResult>> JoinGameAsync(JoinQuizInput input, CancellationToken cancellationToken);
+        Task<BaseContentResponse<QuizGameResult>> GetGameAsync(Guid quizId, CancellationToken cancellationToken);
     }
 }

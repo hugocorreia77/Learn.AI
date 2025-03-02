@@ -5,6 +5,7 @@ namespace Learn.AI.Client.Abstractions
 {
     public interface ILearnAIClient
     {
-        Task<BaseContentResponse<QuestionResult>?> GetNewQuestionAsync(string category, string language, CancellationToken cancellationToken);
+        Task<BaseContentResponse<QuestionResult>?> GetQuestionAsync(string category, CancellationToken cancellationToken);
+        Task<BaseContentResponse<List<QuestionResult>>> GetQuestionsAsync(int numberOfQuestions, List<string> categories, CancellationToken cancellationToken);
     }
 }
