@@ -4,7 +4,7 @@ using Learn.Core.Api.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.AddLearningAuthentication();
+builder.ConfigureLearningAuthentication();
 builder.Services.ConfigureControllers()
                 .ConfigureConventions()
                 .ConfigureSwaggerGen();

@@ -8,6 +8,7 @@ using Learn.Quizz.Repository.Models;
 using Learn.Quizz.Repository.Repositories;
 using Learn.Quizz.Services.Converters;
 using Learn.Quizz.Services.Interfaces;
+using StackExchange.Redis;
 
 namespace Learn.Quizz.Services
 {
@@ -16,12 +17,17 @@ namespace Learn.Quizz.Services
         private readonly IQuizRepository _quizRepository;
         private readonly IUserContextService _userContextService;
         private readonly ILearnAIClient _aiClient;
+        private readonly IQuizPublisherService _quizPublisher;
 
-        public QuizService(IQuizRepository quizRepository, IUserContextService userContextService, ILearnAIClient aiClient)
+        public QuizService(IQuizRepository quizRepository
+            , IUserContextService userContextService
+            , ILearnAIClient aiClient
+            , IQuizPublisherService quizPublisher)
         {
             _quizRepository = quizRepository;
             _userContextService = userContextService;
             _aiClient = aiClient;
+            _quizPublisher = quizPublisher;
         }
 
         #region public async Task<BaseContentResponse<QuizGameResult>> CreateGameAsync(CreateQuizInput input, CancellationToken cancellationToken)
@@ -112,8 +118,10 @@ namespace Learn.Quizz.Services
             {
                 return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Não foi possível juntar-se ao jogo.");
             }
-            
             var joinedGame = quizGameJoined.Data;
+
+            //await _quizPublisher.PublishPlayerJoinedAsync(joinedGame.Id, $"Player {user.Name} joined the game.");
+
             return new BaseContentResponse<QuizGameResult>
             {
                 Data = new QuizGameResult
@@ -159,7 +167,6 @@ namespace Learn.Quizz.Services
             };
         }
         #endregion
-
 
         #region Private
 

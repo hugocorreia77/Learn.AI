@@ -24,6 +24,10 @@ namespace Learn.Quizz.Api.Extensions
         public static IHostApplicationBuilder AddServices(this IHostApplicationBuilder builder)
         {
             builder.Services.AddTransient<IQuizService, QuizService>();
+
+            builder.Services.AddSingleton<IQuizPublisherService, QuizPublisherService>();
+            builder.Services.AddSingleton<IQuizConsumerService, QuizConsumerService>();
+
             return builder;
         }
         #endregion

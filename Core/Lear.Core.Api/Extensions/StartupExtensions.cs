@@ -1,6 +1,7 @@
-﻿using Learn.Core.Shared.Http;
-using Learn.Core.Shared.Services.Abstractions;
+﻿using Learn.Core.Shared.Http.Swagger;
+using Learn.Core.Shared.Models.Configurations;
 using Learn.Core.Shared.Services;
+using Learn.Core.Shared.Services.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -8,11 +9,9 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
-using System.Diagnostics.Metrics;
-using System.Reflection.Metadata;
+using StackExchange.Redis;
 using System.Text;
 using System.Text.Json.Serialization;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Learn.Core.Api.Extensions
 {
@@ -81,7 +80,15 @@ namespace Learn.Core.Api.Extensions
             return services;
         }
 
-        public static IHostApplicationBuilder AddLearningAuthentication(this IHostApplicationBuilder builder)
+        public static IHostApplicationBuilder ConfigureRedis(this IHostApplicationBuilder builder)
+        {
+            RedisConfiguration redisConfig = GetRedisConfiguration(builder);
+            builder.Services.AddSingleton<IConnectionMultiplexer>(
+                ConnectionMultiplexer.Connect(redisConfig.Address));
+            return builder;
+        }
+
+        public static IHostApplicationBuilder ConfigureLearningAuthentication(this IHostApplicationBuilder builder)
         {
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");
             string secret = jwtSettings?["Secret"] ?? string.Empty;
@@ -123,6 +130,26 @@ namespace Learn.Core.Api.Extensions
                         IssuerSigningKey = new SymmetricSecurityKey(key)
                     };
                     options.MapInboundClaims = false;
+
+                    //For SignalR authentication
+                    // https://learn.microsoft.com/en-us/aspnet/core/signalr/authn-and-authz?view=aspnetcore-7.0#built-in-jwt-authentication
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            // If the request is for our hub...
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) &&
+                                (path.StartsWithSegments("/quizHub")))
+                            {
+                                // Read the token out of the query string
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             builder.Services.AddAuthorization();
@@ -130,5 +157,42 @@ namespace Learn.Core.Api.Extensions
             builder.Services.AddScoped<IUserContextService, UserContextService>();
             return builder;
         }
+
+        public static IHostApplicationBuilder ConfigureSignalR(this IHostApplicationBuilder builder, bool useRedis = false)
+        {
+
+            if (useRedis)
+            {
+                RedisConfiguration redisConfig = GetRedisConfiguration(builder);
+                builder.Services.AddSignalR(
+                    options =>
+                    {
+                        options.EnableDetailedErrors = true;
+                        options.MaximumReceiveMessageSize = 102400000;
+                    })
+                    //.AddMessagePackProtocol()
+                    .AddStackExchangeRedis(redisConfig.Address, options => {
+                        options.Configuration.ChannelPrefix = new RedisChannel(redisConfig.ChannelPrefix, RedisChannel.PatternMode.Literal);
+                    });
+            }
+            else
+            {
+                builder.Services.AddSignalR();
+            }
+
+            return builder;
+        }
+    
+        private static RedisConfiguration GetRedisConfiguration(IHostApplicationBuilder builder)
+        {
+            RedisConfiguration? config = builder.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+            if (config is null)
+            {
+                throw new Exception("Redis configuration not found.");
+            }
+
+            return config;
+        }
+
     }
 }

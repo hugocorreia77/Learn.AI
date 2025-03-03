@@ -1,7 +1,7 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Learn.Core.Shared.Http
+namespace Learn.Core.Shared.Http.Swagger
 {
     public class AddAcceptLanguageHeaderOperationFilter : IOperationFilter
     {
