@@ -8,6 +8,7 @@ using Learn.Quizz.Repository.Models;
 using Learn.Quizz.Repository.Repositories;
 using Learn.Quizz.Services.Converters;
 using Learn.Quizz.Services.Interfaces;
+using Microsoft.AspNetCore.SignalR;
 using StackExchange.Redis;
 
 namespace Learn.Quizz.Services
@@ -17,6 +18,7 @@ namespace Learn.Quizz.Services
         private readonly IQuizRepository _quizRepository;
         private readonly IUserContextService _userContextService;
         private readonly ILearnAIClient _aiClient;
+        private readonly IHubContext<QuizHub> _hubContext;
 
         public QuizService(IQuizRepository quizRepository
             , IUserContextService userContextService
@@ -192,7 +194,6 @@ namespace Learn.Quizz.Services
             };
         }
 
-
         public Task<BaseContentResponse<QuizzGame>> GetFullGameAsync(Guid quizId, CancellationToken cancellationToken)
             => _quizRepository.GetQuizAsync(quizId, cancellationToken);
 
@@ -226,6 +227,52 @@ namespace Learn.Quizz.Services
             }.SetSucceeded();
         }
 
+        public async Task<BaseContentResponse<QuizzGame>> SetAttemptAsync(Guid quizId, Guid questionId, Guid optionId, CancellationToken cancellationToken)
+        {            
+            var gameInfo = await _quizRepository.GetQuizAsync(quizId, cancellationToken);
+            if (!gameInfo.Success || gameInfo.Data is null)
+            {
+                return new BaseContentResponse<QuizzGame>().SetFailed().AddError("Quiz not found.");
+            }
+            var game = gameInfo.Data;
+
+            var user = _userContextService.GetUser();
+
+            if(!game.Users.Exists(s => s.Id == user.Id))
+            {
+                //User do not belongs to this game
+                return new BaseContentResponse<QuizzGame>().SetFailed().AddError("User does not belong to the game.");
+            }
+
+            var question = game.Questions.SingleOrDefault(q => q.Id == questionId);
+            if (question is null)
+            {
+                //Question does not exists
+                return new BaseContentResponse<QuizzGame>().SetFailed().AddError("Question not found.");
+            }
+            if (question.Status == QuestionStatus.Closed)
+            {
+                //Question is closed
+                return new BaseContentResponse<QuizzGame>().SetFailed().AddError("Question can not be answered anymore.");
+            }
+
+            if (question.Attempts is not null && question.Attempts.Exists(q => q.User.Id == user.Id))
+            {
+                //Already has an answer
+                return new BaseContentResponse<QuizzGame>().SetFailed().AddError("An attempt was already submitted");
+            }
+
+            if (question.Options is null || !question.Options.Exists(q => q.Id == optionId))
+            {
+                // Response option does not exists
+                return new BaseContentResponse<QuizzGame>().SetFailed().AddError("Attempt is not valid");
+            }
+            var option = question.Options.First(q => q.Id == optionId);
+
+            var gameResponse = await _quizRepository.SetQuestionAttemptAsync(quizId, questionId, new Attempt { Id = option.Id, User = user, Answer = option}, user, cancellationToken);
+
+            return gameResponse;
+        }
 
         #region Private
 
@@ -281,7 +328,6 @@ namespace Learn.Quizz.Services
                 }).ToList() ?? [],
             }).ToList() ?? [];
         }
-
         #endregion
 
         #endregion

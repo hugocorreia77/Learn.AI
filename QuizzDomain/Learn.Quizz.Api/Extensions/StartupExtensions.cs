@@ -27,6 +27,7 @@ namespace Learn.Quizz.Api.Extensions
 
             builder.Services.AddSingleton<IQuizPublisherService, QuizPublisherService>();
             builder.Services.AddSingleton<IQuizConsumerService, QuizConsumerService>();
+            builder.Services.AddScoped<IQuizEngine, QuizEngine>();
 
             return builder;
         }

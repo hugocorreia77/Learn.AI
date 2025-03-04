@@ -11,5 +11,6 @@ namespace Learn.Quizz.Repository.Repositories
         Task<BaseContentResponse<QuizzGame>> GetQuizAsync(Guid quizId, CancellationToken cancellationToken);
         Task<BaseContentResponse<QuizzGame>> JoinQuizAsync(string quizCode, UserReference user, CancellationToken cancellationToken);
         Task<BaseContentResponse<QuizzGame>> UpdateQuizStatusAsync(Guid quizId, GameStatus status, UserReference user, CancellationToken cancellationToken);
+        Task<BaseContentResponse<QuizzGame>> SetQuestionAttemptAsync(Guid quizId, Guid questionId, Attempt attempt, UserReference user, CancellationToken cancellationToken);
     }
 }

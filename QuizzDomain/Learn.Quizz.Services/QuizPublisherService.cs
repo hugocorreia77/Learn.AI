@@ -44,11 +44,12 @@ namespace Learn.Quizz.Services
             _logger.LogTrace("Message received by {TotalClients}", clientsReceivedCount);
         }
 
-        public async Task PublishGameStartingAsync(string gameCode)
+        public async Task PublishGameStartingAsync(Guid quizId, string gameCode)
         {
             var sub = _redis.GetSubscriber();
             string msg = JsonConvert.SerializeObject(new StartingGame
             {
+                QuizId = quizId,
                 GameCode = gameCode,
                 Message = "Game is starting! Get ready!"
             });

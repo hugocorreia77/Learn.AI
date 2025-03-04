@@ -39,22 +39,6 @@ namespace Learn.Quizz.Api.Controllers
             }
         }
 
-        //[HttpPost("Join")]
-        //public async Task<BaseContentResponse<QuizGameResult>> Join([FromBody] JoinQuizInput input, CancellationToken cancellationToken)
-        //{
-        //    try
-        //    {
-        //        return await _quizService.JoinGameAsync(input, cancellationToken);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Exception thrown joining a quiz.");
-        //        return new BaseContentResponse<QuizGameResult>()
-        //            .SetFailed()
-        //            .AddError("It was not possible to join a quiz.");
-        //    }
-        //}
-
         [HttpGet("{quizId}")]
         public async Task<BaseContentResponse<QuizGameResult>> GetGame([FromQuery] Guid quizId, CancellationToken cancellationToken)
         {
@@ -70,6 +54,8 @@ namespace Learn.Quizz.Api.Controllers
                     .AddError("It was not possible to get the quiz.");
             }
         }
+
+
 
     }
 }

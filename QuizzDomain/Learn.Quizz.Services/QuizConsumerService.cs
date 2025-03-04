@@ -115,7 +115,7 @@ namespace Learn.Quizz.Services
                 await _hubContext
                             .Clients
                             .Group(startingGame.GameCode)
-                            .SendAsync("GameStarting", startingGame.Message);
+                            .SendAsync("GameStarting", startingGame);
             }
             catch (Exception ex)
             {
