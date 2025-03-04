@@ -1,16 +1,10 @@
-﻿using Learn.Core.Shared.Services;
-using Learn.Quizz.Models.Question;
-using Learn.Quizz.Repository.Models;
-using Learn.Quizz.Services.Interfaces;
+﻿using Learn.Quizz.Services.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Learn.Quizz.Services
 {
     public class QuizHub(ILogger<QuizHub> logger
-        //, IQuizService quizService
-        //, IQuizPublisherService messagePublisher
         , IQuizEngine quizEngine
         ) : Hub
     {

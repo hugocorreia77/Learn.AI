@@ -9,7 +9,6 @@ using Learn.Quizz.Repository.Repositories;
 using Learn.Quizz.Services.Converters;
 using Learn.Quizz.Services.Interfaces;
 using Microsoft.AspNetCore.SignalR;
-using StackExchange.Redis;
 
 namespace Learn.Quizz.Services
 {

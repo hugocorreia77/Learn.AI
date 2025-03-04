@@ -1,6 +1,4 @@
-﻿using Learn.Quizz.Repository.Models;
-
-namespace Learn.Quizz.Services.Interfaces
+﻿namespace Learn.Quizz.Services.Interfaces
 {
     public interface IQuizEngine
     {
