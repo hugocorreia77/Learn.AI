@@ -50,7 +50,7 @@ app.MapControllers();
 app.MapHub<QuizHub>("quizHub");
 
 var consumerService = app.Services.GetRequiredService<IQuizConsumerService>();
-consumerService.ListenForPlayerJoinMessage(); 
+await consumerService.RegisterSubscribers(); 
 
 
 app.Run();

@@ -2,6 +2,6 @@
 {
     public interface IQuizConsumerService
     {
-        public void ListenForPlayerJoinMessage();
+        Task RegisterSubscribers();
     }
 }

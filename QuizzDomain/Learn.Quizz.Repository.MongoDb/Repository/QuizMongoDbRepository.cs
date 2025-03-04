@@ -140,5 +140,21 @@ namespace Learn.Quizz.Repository.MongoDb.Repository
                 return new BaseContentResponse<QuizzGame>().SetFailed().AddError(ex.Message);
             }
         }
+
+        public async Task<BaseContentResponse<QuizzGame>> UpdateQuizStatusAsync(Guid quizId, GameStatus status, UserReference user, CancellationToken cancellationToken)
+        {
+            var builder = Builders<QuizzGame>.Filter;
+            var filter = builder.Eq(q => q.Id, quizId);
+            var quizGame = await QuizzGames.Find(filter).SingleOrDefaultAsync(cancellationToken);
+            var update = Builders<QuizzGame>.Update.Set(s => s.Status, status);
+
+            _ = await QuizzGames.UpdateOneAsync(filter, update);
+
+            var updatedQuizGame = await QuizzGames.Find(filter).SingleOrDefaultAsync(cancellationToken);
+            return new BaseContentResponse<QuizzGame>
+            {
+                Data = updatedQuizGame
+            }.SetSucceeded();
+        }
     }
 }

@@ -17,7 +17,6 @@ namespace Learn.Quizz.Services
         private readonly IQuizRepository _quizRepository;
         private readonly IUserContextService _userContextService;
         private readonly ILearnAIClient _aiClient;
-        private readonly IQuizPublisherService _quizPublisher;
 
         public QuizService(IQuizRepository quizRepository
             , IUserContextService userContextService
@@ -27,7 +26,6 @@ namespace Learn.Quizz.Services
             _quizRepository = quizRepository;
             _userContextService = userContextService;
             _aiClient = aiClient;
-            _quizPublisher = quizPublisher;
         }
 
         #region public async Task<BaseContentResponse<QuizGameResult>> CreateGameAsync(CreateQuizInput input, CancellationToken cancellationToken)
@@ -120,8 +118,6 @@ namespace Learn.Quizz.Services
             }
             var joinedGame = quizGameJoined.Data;
 
-            //await _quizPublisher.PublishPlayerJoinedAsync(joinedGame.Id, $"Player {user.Name} joined the game.");
-
             return new BaseContentResponse<QuizGameResult>
             {
                 Data = new QuizGameResult
@@ -167,6 +163,69 @@ namespace Learn.Quizz.Services
             };
         }
         #endregion
+
+        public async Task<BaseContentResponse<QuizGameResult>> GetGameAsync(string gameCode, CancellationToken cancellationToken)
+        {
+            var game = await _quizRepository.GetQuizAsync(gameCode, cancellationToken);
+            if (!game.Success)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Not found");
+            }
+            if (game.Data is null)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Not found");
+            }
+            var quizGame = game.Data;
+
+            return new BaseContentResponse<QuizGameResult>
+            {
+                Data = new QuizGameResult
+                {
+                    Code = quizGame.Code,
+                    Status = quizGame.Status.ToSharedModel(),
+                    Name = quizGame.Name,
+                    Owner = quizGame.CreatedBy,
+                    NumberOfQuestions = quizGame.Questions.Count,
+                    Id = quizGame.Id,
+                    CurrentQuestion = GetQuestionIndex(quizGame.Questions, GetCurrentQuestion(quizGame.Questions))
+                }
+            };
+        }
+
+
+        public Task<BaseContentResponse<QuizzGame>> GetFullGameAsync(Guid quizId, CancellationToken cancellationToken)
+            => _quizRepository.GetQuizAsync(quizId, cancellationToken);
+
+        public async Task<BaseContentResponse<QuizGameResult>> StartGameAsync(Guid quizId, CancellationToken cancellationToken)
+        {
+            var gameResult = await _quizRepository.UpdateQuizStatusAsync(quizId, GameStatus.InProgress,
+                _userContextService.GetUser(), cancellationToken);
+
+            if (!gameResult.Success)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Não foi possível iniciar o jogo.");
+            }
+            if(gameResult.Data is null)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Não foi possível iniciar o jogo.");
+            }
+            var quizGame = gameResult.Data;
+
+            return new BaseContentResponse<QuizGameResult>
+            {
+                Data = new QuizGameResult
+                {
+                    Code = quizGame.Code,
+                    Status = quizGame.Status.ToSharedModel(),
+                    Name = quizGame.Name,
+                    Owner = quizGame.CreatedBy,
+                    NumberOfQuestions = quizGame.Questions.Count,
+                    Id = quizGame.Id,
+                    CurrentQuestion = GetQuestionIndex(quizGame.Questions, GetCurrentQuestion(quizGame.Questions))
+                }
+            }.SetSucceeded();
+        }
+
 
         #region Private
 
@@ -222,6 +281,7 @@ namespace Learn.Quizz.Services
                 }).ToList() ?? [],
             }).ToList() ?? [];
         }
+
         #endregion
 
         #endregion

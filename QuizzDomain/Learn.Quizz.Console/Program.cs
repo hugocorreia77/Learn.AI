@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using Learn.Quizz.Models.Question;
 using Microsoft.AspNetCore.SignalR.Client;
 
 string jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhYzViZjk2Yi02NWNhLTQ3YzMtYWJkOS1lY2VhMDhkMTllMjYiLCJ1bmlxdWVfbmFtZSI6InJpdGEiLCJqdGkiOiI0YWZhMmJkZC1kMzhhLTRjNDMtOTkzNi01NTE4Y2IyMmEyYWIiLCJuYW1lIjoicml0YSIsImV4cCI6MTc0MTA2NDE3OSwiaXNzIjoibGVhcm4uY29tIiwiYXVkIjoibGVhcm4uY29tIn0.80CiMbJgzfup_7Uj66RGqdgdsTO0TeZDE0Il6M1GPEA";
@@ -13,14 +14,37 @@ var connection = new HubConnectionBuilder()
     .Build();
 
 // Evento quando uma mensagem é recebida do servidor
-connection.On<string>("ReceieMessage", message =>
+connection.On<QuestionReference>("QuestionSent", message =>
 {
-    Console.WriteLine($"Mensagem recebida: {message}");
+    Console.WriteLine();
+    Console.WriteLine($"Question");
+    Console.WriteLine($"Category: {message.Category}");
+    Console.WriteLine($"{message.QuestionText}");
+
+    foreach (var item in message.Options ?? [])
+    {
+        Console.WriteLine($"[ ] {item.Text}");
+    }
 });
 
 connection.On<string>("PlayerJoined", message =>
 {
-    Console.WriteLine($"player joined: {message}");
+    Console.WriteLine($"{message}");
+});
+
+connection.On<string>("QuestionSolutionSent", message =>
+{
+    Console.WriteLine($"Solution: {message}");
+});
+
+connection.On<string>("GameStarting", message =>
+{
+    Console.WriteLine($"{message}");
+});
+
+connection.On<string>("GameEnded", message =>
+{
+    Console.WriteLine($"{message}");
 });
 
 
@@ -40,21 +64,33 @@ try
             break;
         }
 
+        switch (message)
+        {
+            case "exit":
+                break;
+            case "join":
+                await connection.SendAsync("JoinGame", "b423e8");
+                break;
+            case "start":
+                await connection.SendAsync("StartGame", "b423e8");
+                break;
+        }
+
         // Envia a mensagem para o servidor SignalR
-        await connection.SendAsync("JoinGame", "b423e8");
+        // await connection.SendAsync("JoinGame", "b423e8");
     }
 }
 catch (Exception ex)
 {
     Console.WriteLine($"Erro ao conectar: {ex.Message}");
-        Console.ReadKey();
-    }
-    finally
+    Console.ReadKey();
+}
+finally
 {
     // Fechar a conexão ao final
     await connection.StopAsync();
     await connection.DisposeAsync();
     Console.WriteLine("Conexão encerrada");
-        Console.ReadKey();
-    }
+    Console.ReadKey();
+}
 
