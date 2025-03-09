@@ -4,6 +4,7 @@ using Learn.Quizz.Models.Messages;
 using Learn.Quizz.Models.Question;
 using Learn.Quizz.Models.Quiz.Input;
 using Learn.Security.Client;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 
@@ -60,7 +61,10 @@ internal class Program
         // Criação da conexão SignalR
         var connection = new HubConnectionBuilder()
             // Defina a URL do seu SignalR Hub
-            .WithUrl(hubUrl)
+            .WithUrl(hubUrl, options =>
+            {
+                options.Transports = HttpTransportType.WebSockets; // Garante WebSockets
+            })
             .Build();
 
         // Evento quando uma mensagem é recebida do servidor
@@ -134,10 +138,10 @@ internal class Program
                     case "exit":
                         break;
                     case "join":
-                        await connection.SendAsync("JoinGame", "b423e8");
+                        await connection.SendAsync("JoinGame", "da552e");
                         break;
                     case "start":
-                        await connection.SendAsync("StartGame", "b423e8");
+                        await connection.SendAsync("StartGame", "da552e");
                         break;
                     case "0":
                     case "1":
@@ -159,7 +163,10 @@ internal class Program
                             //await connection.SendAsync("RespondeCena", input);
                             //await connection.SendAsync("cenass", input);
                             //await connection.SendAsync("Tau", 1);
-                            await connection.InvokeAsync("Xau", "aaa");
+                            var result = await connection.InvokeAsync<string>("Xau", "aaa");
+
+                            Console.WriteLine(result);
+
                             answered = true;
                         }
 

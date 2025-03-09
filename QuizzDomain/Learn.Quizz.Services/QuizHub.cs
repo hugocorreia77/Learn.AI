@@ -35,7 +35,9 @@ namespace Learn.Quizz.Services
 
         public async Task StartGame(string gameCode)
         {
-            await quizEngine.StartGame(Context.ConnectionId, gameCode);
+            // Este processamento tem de ser feito numa thread ou processo diferente
+            // usar direto o StartGame, bloqueia a thread no servidor e não permite processar outros pedidos
+            _ = Task.Run(async () => await quizEngine.StartGame(Context.ConnectionId, gameCode));
         }
 
         public async Task RespondeOption(string quizId, string questionId, string optionId)
@@ -50,9 +52,11 @@ namespace Learn.Quizz.Services
         {
         }
 
-        public async Task Xau(string valor)
+        public async Task<string> Xau(string valor)
         {
             var x = valor;
+
+            return "xau!!";
         }
 
     }
