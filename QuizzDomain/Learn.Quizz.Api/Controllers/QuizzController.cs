@@ -55,7 +55,5 @@ namespace Learn.Quizz.Api.Controllers
             }
         }
 
-
-
     }
 }

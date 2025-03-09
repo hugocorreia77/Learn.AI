@@ -26,3 +26,12 @@ docker run -dt -p 5002:8080 -p 5003:8081 -e ASPNETCORE_ENVIRONMENT="DockerLocal"
 
 docker build -f "C:\Development\sandbox\Learn\LearningDomain\Learn.Learning.Api\Dockerfile" --force-rm -t learning-api:dev --build-arg "BUILD_CONFIGURATION=Release" "C:\Development\sandbox\Learn"
 
+--------------
+
+GCloud - Push imagens
+
+docker tag learning-users-api:prd europe-southwest1-docker.pkg.dev/learn-quiz-453100/learn-users-repo/learning-users-api:prd
+docker push europe-southwest1-docker.pkg.dev/learn-quiz-453100/learn-users-repo/learning-users-api:prd
+
+
+

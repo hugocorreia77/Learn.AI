@@ -1,6 +1,5 @@
 ﻿using Learn.Core.Shared.Extensions;
 using Learn.Core.Shared.Models.Response;
-using Learn.Core.Shared.Security.Abstractions;
 using Learn.Security.Services.Abstractions.Interfaces;
 using Learn.Users.Repository.Repositories;
 

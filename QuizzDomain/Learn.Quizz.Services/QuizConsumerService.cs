@@ -30,6 +30,10 @@ namespace Learn.Quizz.Services
                 ,   async(channel, message) => await ConsumePlayerJoinMessage(channel, message)
                 );
             sub.Subscribe(
+                    new RedisChannel(HubChannels.PlayerUnjoined, RedisChannel.PatternMode.Literal)
+                ,   async(channel, message) => await ConsumePlayerUnjoinMessage(channel, message)
+                );
+            sub.Subscribe(
                     new RedisChannel(HubChannels.Question, RedisChannel.PatternMode.Literal)
                 , async (channel, message) => await ConsumeQuestionMessage(channel, message)
                 );
@@ -47,6 +51,27 @@ namespace Learn.Quizz.Services
                 );
 
             await Task.CompletedTask;
+        }
+
+
+
+        private async Task ConsumePlayerUnjoinMessage(RedisChannel channel, RedisValue message)
+        {
+            try
+            {
+                PlayerUnjoined playerJoined = JsonConvert.DeserializeObject<PlayerUnjoined>(message);
+                await _hubContext
+                    .Groups.RemoveFromGroupAsync(playerJoined.ConnectionId, playerJoined.GameCode);
+
+                await _hubContext
+                            .Clients
+                            .Group(playerJoined.GameCode)
+                            .SendAsync("PlayerUnjoined", "User disconnected");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Could not send message via SignalR. Message: {Message}", message);
+            }
         }
 
         private async Task ConsumePlayerJoinMessage(RedisChannel channel, RedisValue message)

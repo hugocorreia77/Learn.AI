@@ -19,7 +19,7 @@ builder.AddRepositories()
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DockerLocal"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();

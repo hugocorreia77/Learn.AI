@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\SecurityDomain\Learn.Security.Client\Learn.Security.Client.csproj" />
     <ProjectReference Include="..\Learn.Quizz.Models\Learn.Quizz.Models.csproj" />
   </ItemGroup>
 

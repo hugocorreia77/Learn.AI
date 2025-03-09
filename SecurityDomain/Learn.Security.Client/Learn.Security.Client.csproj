@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Learn.Core.Shared\Learn.Core.Shared.csproj" />
     <ProjectReference Include="..\Learn.Security.Models\Learn.Security.Models.csproj" />
   </ItemGroup>
 

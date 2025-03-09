@@ -13,7 +13,7 @@ namespace Learn.Security.Api.Controllers
         [HttpPost("authenticate")]
         public async Task<BaseContentResponse<string>> AuthenticateAsync([FromBody] AuthenticationInput input, CancellationToken cancellationToken)
         {
-            return await securityService.AuthenticateAsync(input.Username, input.Passsword, cancellationToken);
+            return await securityService.AuthenticateAsync(input.Username, input.Password, cancellationToken);
         }
     }
 }

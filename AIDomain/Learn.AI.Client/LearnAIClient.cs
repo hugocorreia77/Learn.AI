@@ -41,8 +41,8 @@ namespace Learn.AI.Client
 
         public async Task<BaseContentResponse<List<QuestionResult>>> GetQuestionsAsync(int numberOfQuestions, List<string> categories, CancellationToken cancellationToken)
         {
-            var categoriesFilter = string.Join("&categories=", categories);
-            var questionResult = await AiClient.GetAsync($"question/multiple?numberOfQuestions={numberOfQuestions}{categoriesFilter}", cancellationToken);
+            var categoriesFilter = $"&categories={string.Join("&categories=", categories)}";
+            var questionResult = await AiClient.GetAsync($"questions/multiple?numberOfQuestions={numberOfQuestions}{categoriesFilter}", cancellationToken);
 
             var questionAsString = await questionResult.Content.ReadAsStringAsync(cancellationToken);
             Logger.LogDebug("Questions received: {Questions}", questionAsString);

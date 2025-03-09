@@ -1,8 +1,11 @@
-﻿using Learn.Core.Shared.Http.Swagger;
+﻿using Learn.Core.Api.Jwt;
+using Learn.Core.Shared.Http.Swagger;
 using Learn.Core.Shared.Models.Configurations;
 using Learn.Core.Shared.Services;
 using Learn.Core.Shared.Services.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
@@ -113,7 +116,7 @@ namespace Learn.Core.Api.Extensions
                 .AddAuthentication(auth =>
                 {
                     auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    //auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
                 .AddJwtBearer(options =>
                 {
@@ -133,23 +136,40 @@ namespace Learn.Core.Api.Extensions
 
                     //For SignalR authentication
                     // https://learn.microsoft.com/en-us/aspnet/core/signalr/authn-and-authz?view=aspnetcore-7.0#built-in-jwt-authentication
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnMessageReceived = context =>
-                        {
-                            var accessToken = context.Request.Query["access_token"];
+                    options.Events = new LearnJwtBearerEvents();
+                    //options.Events = new JwtBearerEvents
+                    //{
+                    //    OnMessageReceived = context =>
+                    //    {
+                    //        var accessToken = context.Request.Query["access_token"];
 
-                            // If the request is for our hub...
-                            var path = context.HttpContext.Request.Path;
-                            if (!string.IsNullOrEmpty(accessToken) &&
-                                (path.StartsWithSegments("/quizHub")))
-                            {
-                                // Read the token out of the query string
-                                context.Token = accessToken;
-                            }
-                            return Task.CompletedTask;
-                        }
-                    };
+                    //        // If the request is for our hub...
+                    //        var path = context.HttpContext.Request.Path;
+                    //        if (!string.IsNullOrEmpty(accessToken) &&
+                    //            (path.StartsWithSegments("/quizHub")))
+                    //        {
+                    //            // Read the token out of the query string
+                    //            context.Token = accessToken;
+                    //        }
+                    //        else
+                    //        {
+                    //            // falta ir buscar o JWT e atribuir ao context.Token
+                    //            // sem isso nao é possivel dar override à autorização
+
+
+                    //            // Give application opportunity to find from a different location, adjust, or reject token
+                    //            //var messageReceivedContext = new MessageReceivedContext(Context, Scheme, Options);
+
+                    //            //// event can set the token
+                    //            //Events.MessageReceived(messageReceivedContext);
+                    //            //if (messageReceivedContext.Result != null)
+                    //            //{
+                    //            //    return messageReceivedContext.Result;
+                    //            //}
+                    //        }
+                    //        return Task.CompletedTask;
+                    //    }
+                    //};
                 });
 
             builder.Services.AddAuthorization();

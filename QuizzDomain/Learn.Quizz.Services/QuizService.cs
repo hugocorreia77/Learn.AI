@@ -9,6 +9,7 @@ using Learn.Quizz.Repository.Repositories;
 using Learn.Quizz.Services.Converters;
 using Learn.Quizz.Services.Interfaces;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
 namespace Learn.Quizz.Services
 {
@@ -18,8 +19,10 @@ namespace Learn.Quizz.Services
         private readonly IUserContextService _userContextService;
         private readonly ILearnAIClient _aiClient;
         private readonly IHubContext<QuizHub> _hubContext;
+        private readonly ILogger<QuizService> _logger;
 
-        public QuizService(IQuizRepository quizRepository
+        public QuizService(ILogger<QuizService> logger
+            , IQuizRepository quizRepository
             , IUserContextService userContextService
             , ILearnAIClient aiClient
             , IQuizPublisherService quizPublisher)
@@ -27,6 +30,7 @@ namespace Learn.Quizz.Services
             _quizRepository = quizRepository;
             _userContextService = userContextService;
             _aiClient = aiClient;
+            _logger = logger;
         }
 
         #region public async Task<BaseContentResponse<QuizGameResult>> CreateGameAsync(CreateQuizInput input, CancellationToken cancellationToken)
@@ -302,6 +306,7 @@ namespace Learn.Quizz.Services
             var questionsResult = await _aiClient.GetQuestionsAsync(totalQuestions, categories, cancellationToken);
             if (!questionsResult.Success)
             {
+                _logger.LogError("Não obteve resposta da API de AI");
                 return [];
             }
 

@@ -36,6 +36,14 @@ namespace Learn.Quizz.Services
             await messagePublisher.PublishPlayerJoinedAsync(gameCode, $"Player {user.Username} joined the game!");
         }
 
+        public async Task UnjoinGame(string connectionId, string gameCode)
+        {
+            var user = userContextService.GetUser();
+            await hubContext.Groups.RemoveFromGroupAsync(connectionId, gameCode);
+            await messagePublisher.PublishPlayerJoinedAsync(gameCode, $"Player {user.Username} joined the game!");
+
+        }
+
         public async Task StartGame(string connectionId, string gameCode)
         {
 
@@ -77,9 +85,10 @@ namespace Learn.Quizz.Services
             await messagePublisher.PublishGameEnded(gameCode);
         }
     
-        public async Task SetAttempt(string connectionId, Guid gameId, Guid questionId, Guid optionId)
+        public async Task SetAttempt(Guid gameId, Guid questionId, Guid optionId)
         {
             await quizService.SetAttemptAsync(gameId, questionId, optionId, CancellationToken.None);
         }
+
     }
 }

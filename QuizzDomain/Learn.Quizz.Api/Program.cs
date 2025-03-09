@@ -1,7 +1,5 @@
 using Learn.AI.Client;
 using Learn.Core.Api.Extensions;
-using Learn.Core.Shared.Services;
-using Learn.Core.Shared.Services.Abstractions;
 using Learn.Quizz.Api.Extensions;
 using Learn.Quizz.Services;
 using Learn.Quizz.Services.Interfaces;
@@ -41,8 +39,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
@@ -50,7 +48,6 @@ app.MapControllers();
 app.MapHub<QuizHub>("quizHub");
 
 var consumerService = app.Services.GetRequiredService<IQuizConsumerService>();
-await consumerService.RegisterSubscribers(); 
-
+await consumerService.RegisterSubscribers();
 
 app.Run();

@@ -2,8 +2,9 @@
 {
     public interface IQuizEngine
     {
-        Task JoinGame(string connectionId, string gameId);
+        Task JoinGame(string connectionId, string gameCode);
+        Task UnjoinGame(string connectionId, string gameCode);
         Task StartGame(string connectionId, string gameCode);
-        Task SetAttempt(string connectionId, Guid gameId, Guid questionId, Guid optionId);
+        Task SetAttempt(Guid gameId, Guid questionId, Guid optionId);
     }
 }

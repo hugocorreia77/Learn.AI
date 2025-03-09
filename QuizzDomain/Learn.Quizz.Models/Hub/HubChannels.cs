@@ -3,6 +3,7 @@
     public static class HubChannels
     {
         public const string PlayerJoined = "player_joined";
+        public const string PlayerUnjoined = "player_unjoined";
         public const string GameStarting = "game_starting";
         public const string Question = "game_question";
         public const string QuestionResult = "game_question_result";

@@ -69,8 +69,23 @@ namespace Learn.Quizz.Services
 
             _logger.LogTrace("Publishing {Message}", msg);
             var clientsReceivedCount = await sub.PublishAsync(new RedisChannel(HubChannels.PlayerJoined, RedisChannel.PatternMode.Literal), msg);
-            _logger.LogTrace("Message received by {TotalClients}", clientsReceivedCount);
+            _logger.LogTrace("Message received by {TotalClients} clients", clientsReceivedCount);
         }
+
+        public async Task PublishPlayerUnjoinedAsync(string gameCode, string message)
+        {
+            var sub = _redis.GetSubscriber();
+            string msg = JsonConvert.SerializeObject(new PlayerJoined
+            {
+                GameCode = gameCode,
+                Message = message
+            });
+
+            _logger.LogTrace("Publishing {Message}", msg);
+            var clientsReceivedCount = await sub.PublishAsync(new RedisChannel(HubChannels.PlayerJoined, RedisChannel.PatternMode.Literal), msg);
+            _logger.LogTrace("Message received by {TotalClients} clients", clientsReceivedCount);
+        }
+
 
         public async Task PublishQuestionResult(string gameCode, string message)
         {
@@ -83,7 +98,7 @@ namespace Learn.Quizz.Services
 
             _logger.LogTrace("Publishing {Message}", msg);
             var clientsReceivedCount = await sub.PublishAsync(new RedisChannel(HubChannels.QuestionResult, RedisChannel.PatternMode.Literal), msg);
-            _logger.LogTrace("Message received by {TotalClients}", clientsReceivedCount);
+            _logger.LogTrace("Message received by {TotalClients}  clients", clientsReceivedCount);
         }
     }
 }
