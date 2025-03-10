@@ -2,14 +2,13 @@
 using Learn.Core.Shared.Models.Response;
 using Learn.Core.Shared.Models.User;
 using Learn.Core.Shared.Repository.Configurations;
-using Learn.Core.Shared.Services.Abstractions;
 using Learn.Quizz.Repository.Models;
 using Learn.Quizz.Repository.Repositories;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Numerics;
+using System.Threading;
 
 namespace Learn.Quizz.Repository.MongoDb.Repository
 {
@@ -166,7 +165,8 @@ namespace Learn.Quizz.Repository.MongoDb.Repository
                    Builders<QuizzGame>.Filter.Eq($"{nameof(QuizzGame.Questions)}.{nameof(Question.Id)}", questionId)
             );
 
-            var update = Builders<QuizzGame>.Update.Push($"{nameof(QuizzGame.Questions)}.$.{nameof(Question.Attempts)}", attempt);
+            var update = Builders<QuizzGame>.Update
+                 .Push($"{nameof(QuizzGame.Questions)}.$.{nameof(Question.Attempts)}", attempt);
 
             _ = await QuizzGames.UpdateOneAsync(filter, update);
 
@@ -175,6 +175,78 @@ namespace Learn.Quizz.Repository.MongoDb.Repository
             {
                 Data = updatedQuizGame
             }.SetSucceeded();
+        }
+
+        public async Task<BaseContentResponse<QuizzGame>> StartQuestionAsync(Guid quizId, Guid questionId, CancellationToken cancellationToken)
+        {
+            var builder = Builders<QuizzGame>.Filter;
+
+            var filter = Builders<QuizzGame>.Filter.And(
+                   Builders<QuizzGame>.Filter.Eq(q => q.Id, quizId),
+                   Builders<QuizzGame>.Filter.Eq($"{nameof(QuizzGame.Questions)}.{nameof(Question.Id)}", questionId)
+            );
+
+            var update = Builders<QuizzGame>.Update
+                 .Set($"{nameof(QuizzGame.Questions)}.$.{nameof(Question.StartedAt)}", DateTime.Now)
+                 .Set($"{nameof(QuizzGame.Questions)}.$.{nameof(Question.Status)}", QuestionStatus.InProgress)
+                 ;
+
+            _ = await QuizzGames.UpdateOneAsync(filter, update);
+
+            var updatedQuizGame = await QuizzGames.Find(filter).SingleOrDefaultAsync(cancellationToken);
+            return new BaseContentResponse<QuizzGame>
+            {
+                Data = updatedQuizGame
+            }.SetSucceeded();
+        }
+
+        public async Task<BaseContentResponse<QuizzGame>> AddScoreAsync(Guid gameId, UserReference user, int score, CancellationToken cancellationToken)
+        {
+            var filter = Builders<QuizzGame>.Filter.And(
+                   Builders<QuizzGame>.Filter.Eq(g => g.Id, gameId),
+                   Builders<QuizzGame>.Filter.ElemMatch(g => g.GameScore, p => p.User == user)
+               );
+
+            var update = Builders<QuizzGame>.Update.Inc($"{nameof(QuizzGame.GameScore)}.$.{nameof(UserScore.Score)}", score);
+
+            var updateResult = await QuizzGames.UpdateOneAsync(filter, update, cancellationToken: cancellationToken);
+
+            if (updateResult.ModifiedCount == 0)
+            {
+                var addPlayerFilter = Builders<QuizzGame>.Filter.Eq(g => g.Id, gameId);
+                var addPlayerUpdate = Builders<QuizzGame>.Update.Push(g => g.GameScore, 
+                    new UserScore
+                    {
+                        User = user,
+                        Score = score
+                    });
+
+                await QuizzGames.UpdateOneAsync(addPlayerFilter, addPlayerUpdate, cancellationToken: cancellationToken);
+            }
+
+            var updatedQuizGame = await QuizzGames.Find(filter).SingleOrDefaultAsync(cancellationToken);
+            return new BaseContentResponse<QuizzGame>
+            {
+                Data = updatedQuizGame
+            };
+        }
+
+        public async Task<BaseContentResponse<QuizzGame>> CloseQuestionAsync(Guid quizId, Guid questionId, CancellationToken cancellationToken)
+        {
+            var filter = Builders<QuizzGame>.Filter.And(
+                   Builders<QuizzGame>.Filter.Eq(g => g.Id, quizId),
+                   Builders<QuizzGame>.Filter.ElemMatch(g => g.Questions, p => p.Id == questionId)
+               );
+
+            var update = Builders<QuizzGame>.Update.Set($"{nameof(QuizzGame.Questions)}.$.{nameof(Question.Status)}", QuestionStatus.Closed);
+
+            await QuizzGames.UpdateOneAsync(filter, update, cancellationToken: cancellationToken);
+
+            var updatedQuizGame = await QuizzGames.Find(filter).SingleOrDefaultAsync(cancellationToken);
+            return new BaseContentResponse<QuizzGame>
+            {
+                Data = updatedQuizGame
+            };
         }
     }
 }

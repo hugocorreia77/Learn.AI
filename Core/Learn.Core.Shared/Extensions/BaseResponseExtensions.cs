@@ -46,7 +46,6 @@ namespace Learn.Core.Shared.Extensions
 
         #region public static BaseContentResponse<T> SetSucceeded<T>(this BaseContentResponse<T> response)
         public static BaseContentResponse<T> SetSucceeded<T>(this BaseContentResponse<T> response)
-            where T : class
         {
             response.Success = true;
             return response;
@@ -55,7 +54,6 @@ namespace Learn.Core.Shared.Extensions
 
         #region public static BaseContentResponse<T> SetFailed<T>(this BaseContentResponse<T> response)
         public static BaseContentResponse<T> SetFailed<T>(this BaseContentResponse<T> response)
-            where T : class
         {
             response.Success = false;
             return response;
@@ -64,7 +62,6 @@ namespace Learn.Core.Shared.Extensions
 
         #region public static BaseContentResponse<T> AddError<T>(this BaseContentResponse<T> response, string errorMessage)
         public static BaseContentResponse<T> AddError<T>(this BaseContentResponse<T> response, string errorMessage)
-            where T : class
         {
             response.Errors ??= [];
             response.Errors.Add(new ResponseMessage
@@ -77,7 +74,6 @@ namespace Learn.Core.Shared.Extensions
 
         #region public static BaseContentResponse<T> AddWarning<T>(this BaseContentResponse<T> response, string errorMessage)
         public static BaseContentResponse<T> AddWarning<T>(this BaseContentResponse<T> response, string errorMessage)
-            where T : class
         {
             response.Warnings ??= [];
             response.Warnings.Add(new ResponseMessage

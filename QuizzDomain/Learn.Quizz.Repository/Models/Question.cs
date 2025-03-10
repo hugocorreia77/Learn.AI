@@ -14,7 +14,7 @@ namespace Learn.Quizz.Repository.Models
         [JsonPropertyOrder(8)] public string? Explanation { get; set; }
         [JsonPropertyOrder(9)] public List<string> Tags { get; set; } = [];
         [JsonPropertyOrder(10)] public List<Attachment> Attachments { get; set; } = [];
-        [JsonPropertyOrder(11)] public List<Attempt>? Attempts { get; set; }
+        [JsonPropertyOrder(11)] public List<Attempt> Attempts { get; set; } = [];
         [JsonPropertyOrder(12)] public DateTime? StartedAt { get; set; }
         [JsonPropertyOrder(13)] public DateTime? EndedAt { get; set; }
     }

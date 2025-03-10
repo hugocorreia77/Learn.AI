@@ -13,6 +13,10 @@ namespace Learn.Quizz.Services.Interfaces
         Task<BaseContentResponse<QuizzGame>> GetFullGameAsync(Guid quizId, CancellationToken cancellationToken);
         Task<BaseContentResponse<QuizGameResult>> GetGameAsync(string gameCode, CancellationToken cancellationToken);
         Task<BaseContentResponse<QuizGameResult>> StartGameAsync(Guid quizId, CancellationToken cancellationToken);
+        Task<BaseContentResponse<QuizGameResult>> EndGameAsync(Guid quizId, CancellationToken cancellationToken);
         Task<BaseContentResponse<QuizzGame>> SetAttemptAsync(Guid quizId, Guid questionId, Guid optionId, CancellationToken cancellationToken);
+        Task<BaseContentResponse<QuizzGame>> StartQuestionAsync(Guid quizId, Guid questionId, CancellationToken cancellationToken);
+        Task<BaseContentResponse<QuizzGame>> AddScoreAsync(Guid gameId, int score, CancellationToken cancellationToken);
+        Task<BaseContentResponse<QuizzGame>> CloseQuestionAsync(Guid quizId, Guid questionId, CancellationToken cancellationToken);
     }
 }

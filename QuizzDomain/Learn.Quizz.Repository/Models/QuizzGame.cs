@@ -14,7 +14,8 @@ namespace Learn.Quizz.Repository.Models
         [JsonPropertyOrder(7)] public required List<UserReference> Users { get; set; }
         [JsonPropertyOrder(8)] public UserReference? Winner { get; set; }
         [JsonPropertyOrder(9)] public required List<Question> Questions { get; set; }
-        [JsonPropertyOrder(10)] public required UserReference CreatedBy { get; set; }
+        [JsonPropertyOrder(10)] public required List<UserScore> GameScore { get; set; } = [];
+        [JsonPropertyOrder(11)] public required UserReference CreatedBy { get; set; }
         [JsonPropertyOrder(12)] public required DateTime CreatedOn { get; set; }
         [JsonPropertyOrder(13)] public UserReference? UpdatedBy { get; set; }
         [JsonPropertyOrder(14)] public DateTime? UpdatedOn { get; set; }

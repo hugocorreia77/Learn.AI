@@ -1,6 +1,7 @@
 ﻿using Learn.AI.Client.Abstractions;
 using Learn.Core.Shared.Extensions;
 using Learn.Core.Shared.Models.Response;
+using Learn.Core.Shared.Models.User;
 using Learn.Core.Shared.Services.Abstractions;
 using Learn.Quizz.Models.Quiz.Input;
 using Learn.Quizz.Models.Quiz.Result;
@@ -47,7 +48,8 @@ namespace Learn.Quizz.Services
                 Users = [],
                 Questions = await GetQuestionsForQuizAsync(input.Categories, input.NumberOfQuestions, cancellationToken),
                 Status = GameStatus.WaitingPlayersToJoin,
-                Type = input.QuizType.ToDbModel()
+                Type = input.QuizType.ToDbModel(),
+                GameScore = []
             };
 
             var quizResult = await _quizRepository.CreateQuizAsync(quiz, cancellationToken);
@@ -93,6 +95,15 @@ namespace Learn.Quizz.Services
                 return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Not found");
             }
             var quizGame = game.Data;
+
+            if(quizGame.Status == GameStatus.InProgress)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Não pode juntar-se ao jogo, o jogo já está em progresso.");
+            }
+            else if (quizGame.Status == GameStatus.Finished)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("O jogo já terminou.");
+            }
 
             var user = _userContextService.GetUser();
             if(quizGame.Users.Exists(us => us.Id == user.Id))
@@ -169,6 +180,7 @@ namespace Learn.Quizz.Services
         }
         #endregion
 
+        #region public async Task<BaseContentResponse<QuizGameResult>> GetGameAsync(string gameCode, CancellationToken cancellationToken)
         public async Task<BaseContentResponse<QuizGameResult>> GetGameAsync(string gameCode, CancellationToken cancellationToken)
         {
             var game = await _quizRepository.GetQuizAsync(gameCode, cancellationToken);
@@ -196,12 +208,33 @@ namespace Learn.Quizz.Services
                 }
             };
         }
+        #endregion
 
         public Task<BaseContentResponse<QuizzGame>> GetFullGameAsync(Guid quizId, CancellationToken cancellationToken)
             => _quizRepository.GetQuizAsync(quizId, cancellationToken);
 
         public async Task<BaseContentResponse<QuizGameResult>> StartGameAsync(Guid quizId, CancellationToken cancellationToken)
         {
+            var game = await _quizRepository.GetQuizAsync(quizId, cancellationToken);
+            if (!game.Success)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Not found");
+            }
+            if (game.Data is null)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Not found");
+            }
+            var quizGame = game.Data;
+
+            if (quizGame.Status == GameStatus.InProgress)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("O jogo já está em progresso.");
+            }
+            else if (quizGame.Status == GameStatus.Finished)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("O jogo já terminou.");
+            }
+
             var gameResult = await _quizRepository.UpdateQuizStatusAsync(quizId, GameStatus.InProgress,
                 _userContextService.GetUser(), cancellationToken);
 
@@ -213,7 +246,7 @@ namespace Learn.Quizz.Services
             {
                 return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Não foi possível iniciar o jogo.");
             }
-            var quizGame = gameResult.Data;
+            quizGame = gameResult.Data;
 
             return new BaseContentResponse<QuizGameResult>
             {
@@ -272,10 +305,47 @@ namespace Learn.Quizz.Services
             }
             var option = question.Options.First(q => q.Id == optionId);
 
-            var gameResponse = await _quizRepository.SetQuestionAttemptAsync(quizId, questionId, new Attempt { Id = option.Id, User = user, Answer = option}, user, cancellationToken);
+            var gameResponse = await _quizRepository.SetQuestionAttemptAsync(quizId, questionId, new Attempt { User = user, Answer = option}, user, cancellationToken);
 
             return gameResponse;
         }
+
+        public async Task<BaseContentResponse<QuizGameResult>> EndGameAsync(Guid quizId, CancellationToken cancellationToken)
+        {
+            var gameResult = await _quizRepository.UpdateQuizStatusAsync(quizId, GameStatus.Finished,
+                _userContextService.GetUser(), cancellationToken);
+
+            if (!gameResult.Success)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Não foi possível iniciar o jogo.");
+            }
+            if (gameResult.Data is null)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Não foi possível iniciar o jogo.");
+            }
+            var quizGame = gameResult.Data;
+
+            return new BaseContentResponse<QuizGameResult>
+            {
+                Data = new QuizGameResult
+                {
+                    Code = quizGame.Code,
+                    Status = quizGame.Status.ToSharedModel(),
+                    Name = quizGame.Name,
+                    Owner = quizGame.CreatedBy,
+                    NumberOfQuestions = quizGame.Questions.Count,
+                    Id = quizGame.Id,
+                    CurrentQuestion = GetQuestionIndex(quizGame.Questions, GetCurrentQuestion(quizGame.Questions))
+                }
+            }.SetSucceeded();
+        }
+
+        public Task<BaseContentResponse<QuizzGame>> StartQuestionAsync(Guid quizId, Guid questionId, CancellationToken cancellationToken)
+            => _quizRepository.StartQuestionAsync(quizId, questionId, cancellationToken);
+
+        public Task<BaseContentResponse<QuizzGame>> CloseQuestionAsync(Guid quizId, Guid questionId, CancellationToken cancellationToken)
+            => _quizRepository.CloseQuestionAsync(quizId, questionId, cancellationToken);
+
 
         #region Private
 
@@ -332,6 +402,9 @@ namespace Learn.Quizz.Services
                 }).ToList() ?? [],
             }).ToList() ?? [];
         }
+
+        public Task<BaseContentResponse<QuizzGame>> AddScoreAsync(Guid gameId, int score, CancellationToken cancellationToken)
+            => _quizRepository.AddScoreAsync(gameId, _userContextService.GetUser(), score, cancellationToken);
         #endregion
 
         #endregion

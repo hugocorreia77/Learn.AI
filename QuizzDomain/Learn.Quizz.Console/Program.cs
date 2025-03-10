@@ -138,10 +138,12 @@ internal class Program
                     case "exit":
                         break;
                     case "join":
-                        await connection.SendAsync("JoinGame", "da552e");
+                        var resultJoinGame = await connection.InvokeAsync<string>("JoinGame", "305a63");
+                        Console.WriteLine($"{resultJoinGame}");
                         break;
                     case "start":
-                        await connection.SendAsync("StartGame", "da552e");
+                        var resultStartGame = await connection.InvokeAsync<string>("StartGame", "305a63");
+                        Console.WriteLine($"{resultStartGame}");
                         break;
                     case "0":
                     case "1":
@@ -158,39 +160,12 @@ internal class Program
                                 QuestionId = currentQuestionId.Value,
                                 AttemptId = option.Id
                             };
-
-                            //await connection.SendAsync("RespondeOption", input);
-                            //await connection.SendAsync("RespondeCena", input);
-                            //await connection.SendAsync("cenass", input);
-                            //await connection.SendAsync("Tau", 1);
-                            var result = await connection.InvokeAsync<string>("Xau", "aaa");
-
-                            Console.WriteLine(result);
-
+                            await connection.SendAsync("AnswerOption", input);
                             answered = true;
                         }
 
                         break;
                     default:
-
-                        //if (int.TryParse(message, out var index))
-                        //{
-                        //    var option = currentOptions[index];
-
-                        //    var input = new AnswerInput
-                        //    {
-                        //        QuizId = currentQuizId.Value,
-                        //        QuestionId = currentQuestionId.Value,
-                        //        AttemptId = option.Id
-                        //    };
-
-                        //    //await connection.SendAsync("RespondeOption", input);
-                        //    //await connection.SendAsync("RespondeCena", input);
-                        //    //await connection.SendAsync("cenass", input);
-                        //    //await connection.SendAsync("Tau", 1);
-                        //    await connection.SendAsync("Xau", "aaa");
-                        //    answered = true;
-                        //}
 
                         break;
                 }

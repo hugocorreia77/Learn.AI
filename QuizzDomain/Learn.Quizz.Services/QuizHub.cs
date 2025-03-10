@@ -28,35 +28,33 @@ namespace Learn.Quizz.Services
             base.OnDisconnectedAsync(exception);
         }
 
-        public async Task JoinGame(string gameCode)
+        public async Task<string> JoinGame(string gameCode)
         {
-            await quizEngine.JoinGame(Context.ConnectionId, gameCode);
+            var result = await quizEngine.JoinGameAsync(Context.ConnectionId, gameCode, CancellationToken.None);
+        
+            if(!result.Success)
+            {
+                return result.Errors.FirstOrDefault()?.Message ?? "Não foi possível juntar-se ao jogo.";
+            }
+
+            return "Juntou-se ao jogo!";
         }
 
-        public async Task StartGame(string gameCode)
+        public async Task<string> StartGame(string gameCode)
         {
-            // Este processamento tem de ser feito numa thread ou processo diferente
-            // usar direto o StartGame, bloqueia a thread no servidor e não permite processar outros pedidos
-            _ = Task.Run(async () => await quizEngine.StartGame(Context.ConnectionId, gameCode));
+            var result = await quizEngine.StartGameAsync(Context.ConnectionId, gameCode, CancellationToken.None);
+        
+            if(!result.Success)
+            {
+                return result.Errors.FirstOrDefault()?.Message ?? "Não foi possível iniciar o jogo";
+            }
+
+            return "Jogo iniciado!";
         }
 
-        public async Task RespondeOption(string quizId, string questionId, string optionId)
+        public async Task AnswerOption(AnswerInput answer)
         {
-            await quizEngine.SetAttempt(Guid.Parse(quizId), Guid.Parse(questionId), Guid.Parse(optionId));
-        }
-
-        public async Task RespondeCena(AnswerInput quizanswer)
-        {
-        }
-        public async Task Tau(int valor)
-        {
-        }
-
-        public async Task<string> Xau(string valor)
-        {
-            var x = valor;
-
-            return "xau!!";
+            await quizEngine.SetAttemptAsync(answer.QuizId, answer.QuestionId, answer.AttemptId, CancellationToken.None);
         }
 
     }

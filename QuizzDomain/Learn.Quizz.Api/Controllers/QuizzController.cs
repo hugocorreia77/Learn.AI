@@ -55,5 +55,24 @@ namespace Learn.Quizz.Api.Controllers
             }
         }
 
+        [HttpPost("answer")]
+        public async Task<BaseContentResponse<bool>> SetAnswer([FromBody] AnswerInput answer, CancellationToken cancellationToken)
+        {
+            try
+            {
+
+                await _quizService.SetAttemptAsync(answer.QuizId, answer.QuestionId, answer.AttemptId, CancellationToken.None);
+                return new BaseContentResponse<bool>(); 
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception thrown getting the quiz.");
+                return new BaseContentResponse<bool>()
+                    .SetFailed()
+                    .AddError("It was not possible to get the quiz.");
+            }
+        }
+
+
     }
 }
