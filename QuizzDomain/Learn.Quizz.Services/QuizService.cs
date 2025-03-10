@@ -96,15 +96,6 @@ namespace Learn.Quizz.Services
             }
             var quizGame = game.Data;
 
-            if(quizGame.Status == GameStatus.InProgress)
-            {
-                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Não pode juntar-se ao jogo, o jogo já está em progresso.");
-            }
-            else if (quizGame.Status == GameStatus.Finished)
-            {
-                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("O jogo já terminou.");
-            }
-
             var user = _userContextService.GetUser();
             if(quizGame.Users.Exists(us => us.Id == user.Id))
             {
@@ -122,6 +113,16 @@ namespace Learn.Quizz.Services
                     }
                 }.SetSucceeded();
             }
+
+            if (quizGame.Status == GameStatus.InProgress)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("Não pode juntar-se ao jogo, o jogo já está em progresso.");
+            }
+            else if (quizGame.Status == GameStatus.Finished)
+            {
+                return new BaseContentResponse<QuizGameResult>().SetFailed().AddError("O jogo já terminou.");
+            }
+
 
             var quizGameJoined = await _quizRepository.JoinQuizAsync(input.QuizCode, user, cancellationToken);
             if (!quizGameJoined.Success)
