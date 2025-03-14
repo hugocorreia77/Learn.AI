@@ -1,12 +1,12 @@
 ﻿# Definir nome da imagem
 $ImageTag = "prd"
 $AspnetCoreEnvironment = "DockerLocal"
-$ImageName = "learning-ai-api:$($ImageTag)"
-$ContainerName = "learning-ai-api-$($ImageTag)"
+$ImageName = "learning-quizz-api:$($ImageTag)"
+$ContainerName = "learning-quizz-api-$($ImageTag)"
 
 # Construir a imagem Docker
 Write-Host "Construindo a imagem Docker..."
-docker build -f "C:\Development\sandbox\Learn\AIDomain\Learn.AI.Api\Dockerfile" --force-rm  -t $ImageName --build-arg "BUILD_CONFIGURATION=Release" "C:\Development\sandbox\Learn"
+docker build -f "C:\Development\sandbox\Learn\QuizzDomain\Learn.Quizz.Api\Dockerfile" --force-rm  -t $ImageName --build-arg "BUILD_CONFIGURATION=Release" "C:\Development\sandbox\Learn"
 
 # Verificar se a construção foi bem-sucedida
 if ($LASTEXITCODE -ne 0) {

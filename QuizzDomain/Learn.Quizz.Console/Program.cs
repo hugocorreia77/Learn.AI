@@ -15,6 +15,7 @@ internal class Program
     {
         bool loginDone = false;
         string jwt = string.Empty;
+        string code = string.Empty;
 
         while (!loginDone)
         {
@@ -51,7 +52,9 @@ internal class Program
             }
         }
 
-        string hubUrl = $"https://localhost:7274/quizHub?access_token={jwt}"; // Substitua pela URL do seu SignalR Hub
+        var url = "https://learning-quizz-api-prd-452013520192.europe-southwest1.run.app";
+        //var url = "https://localhost:7274";
+        string hubUrl = $"{url}/quizHub?access_token={jwt}"; // Substitua pela URL do seu SignalR Hub
 
         List<QuestionOptionReference> currentOptions = [];
         Guid? currentQuizId = null;
@@ -138,11 +141,13 @@ internal class Program
                     case "exit":
                         break;
                     case "join":
-                        var resultJoinGame = await connection.InvokeAsync<string>("JoinGame", "305a63");
+                        Console.WriteLine("Code:");
+                        code = Console.ReadLine();
+                        var resultJoinGame = await connection.InvokeAsync<string>("JoinGame", code);
                         Console.WriteLine($"{resultJoinGame}");
                         break;
                     case "start":
-                        var resultStartGame = await connection.InvokeAsync<string>("StartGame", "305a63");
+                        var resultStartGame = await connection.InvokeAsync<string>("StartGame", code);
                         Console.WriteLine($"{resultStartGame}");
                         break;
                     case "0":

@@ -87,7 +87,8 @@ namespace Learn.Core.Api.Extensions
         {
             RedisConfiguration redisConfig = GetRedisConfiguration(builder);
             builder.Services.AddSingleton<IConnectionMultiplexer>(
-                ConnectionMultiplexer.Connect(redisConfig.Address));
+                ConnectionMultiplexer.Connect(redisConfig.Address
+                ));
             return builder;
         }
 
