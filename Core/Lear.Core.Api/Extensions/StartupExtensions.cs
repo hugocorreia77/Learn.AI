@@ -4,8 +4,6 @@ using Learn.Core.Shared.Models.Configurations;
 using Learn.Core.Shared.Services;
 using Learn.Core.Shared.Services.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson;

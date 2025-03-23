@@ -6,7 +6,6 @@ using Learn.Quizz.Services.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Threading;
 
 namespace Learn.Quizz.Services
 {
@@ -63,8 +62,10 @@ namespace Learn.Quizz.Services
             }
 
             // do not await
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             Start(gameInfo.Data, gameCode, cancellationToken);
-            
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
             return gameStartResult;
         }
 

@@ -1,4 +1,5 @@
 using Learn.Core.Api.Extensions;
+using Learn.Core.Shared.Http;
 using Learn.Security.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +25,8 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DockerLoca
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(CorsPolicyHelper.CorsPolicyName); // Aplicar CORS antes do SignalR
 
 app.UseHttpsRedirection();
 

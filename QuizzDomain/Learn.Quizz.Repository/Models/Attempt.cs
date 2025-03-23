@@ -1,4 +1,4 @@
-﻿using Learn.Core.Shared.Models.User;
+﻿using Learn.Users.Models;
 using System.Text.Json.Serialization;
 
 namespace Learn.Quizz.Repository.Models

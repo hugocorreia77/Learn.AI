@@ -15,7 +15,7 @@ internal class Program
     {
         bool loginDone = false;
         string jwt = string.Empty;
-        string code = string.Empty;
+        string? code = string.Empty;
 
         while (!loginDone)
         {
@@ -26,6 +26,11 @@ internal class Program
 
             using ILoggerFactory loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
             ILogger<LearnSecurityClient> loggerSec = loggerFactory.CreateLogger<LearnSecurityClient>();
+
+            if(string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            {
+                continue;
+            }
 
             LearnSecurityClient lsc = new LearnSecurityClient(
                 loggerSec,
@@ -41,7 +46,7 @@ internal class Program
                 .GetAwaiter()
                 .GetResult();
 
-            if (!authResponse.Success)
+            if (!authResponse.Success || string.IsNullOrEmpty(authResponse.Data))
             {
                 Console.WriteLine("auth failed");
             }
@@ -59,7 +64,7 @@ internal class Program
         List<QuestionOptionReference> currentOptions = [];
         Guid? currentQuizId = null;
         Guid? currentQuestionId = null;
-        bool answered = false;
+        //bool answered = false;
 
         // Criação da conexão SignalR
         var connection = new HubConnectionBuilder()
@@ -73,7 +78,7 @@ internal class Program
         // Evento quando uma mensagem é recebida do servidor
         connection.On<QuestionReference>("QuestionSent", message =>
         {
-            answered = false;
+            //answered = false;
             Console.WriteLine();
             Console.WriteLine($"Question");
             Console.WriteLine($"Category: {message.Category}");
@@ -155,7 +160,9 @@ internal class Program
                     case "2":
                     case "3":
 
-                        if (int.TryParse(message, out var index))
+                        if (int.TryParse(message, out var index) 
+                            && currentQuizId is not null                             
+                            && currentQuestionId is not null)
                         {
                             var option = currentOptions[index];
 
@@ -166,7 +173,7 @@ internal class Program
                                 AttemptId = option.Id
                             };
                             await connection.SendAsync("AnswerOption", input);
-                            answered = true;
+                            //answered = true;
                         }
 
                         break;

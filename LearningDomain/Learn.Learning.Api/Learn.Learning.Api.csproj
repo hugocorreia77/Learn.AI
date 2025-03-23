@@ -17,7 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\AIDomain\Learn.AI.Client\Learn.AI.Client.csproj" />
     <ProjectReference Include="..\..\Core\Lear.Core.Api\Learn.Core.Api.csproj" />
-    <ProjectReference Include="..\..\Core\Learn.Core.Shared\Learn.Core.Shared.csproj" />
     <ProjectReference Include="..\Learn.Learning.Repository.MongoDb\Learn.Learning.Repository.MongoDb.csproj" />
     <ProjectReference Include="..\Learn.Learning.Services\Learn.Learning.Services.csproj" />
   </ItemGroup>

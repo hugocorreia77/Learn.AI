@@ -1,7 +1,6 @@
 ﻿using Learn.AI.Client.Abstractions;
 using Learn.Core.Shared.Extensions;
 using Learn.Core.Shared.Models.Response;
-using Learn.Core.Shared.Models.User;
 using Learn.Core.Shared.Services.Abstractions;
 using Learn.Quizz.Models.Quiz.Input;
 using Learn.Quizz.Models.Quiz.Result;
@@ -9,7 +8,6 @@ using Learn.Quizz.Repository.Models;
 using Learn.Quizz.Repository.Repositories;
 using Learn.Quizz.Services.Converters;
 using Learn.Quizz.Services.Interfaces;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace Learn.Quizz.Services
@@ -19,7 +17,6 @@ namespace Learn.Quizz.Services
         private readonly IQuizRepository _quizRepository;
         private readonly IUserContextService _userContextService;
         private readonly ILearnAIClient _aiClient;
-        private readonly IHubContext<QuizHub> _hubContext;
         private readonly ILogger<QuizService> _logger;
 
         public QuizService(ILogger<QuizService> logger
@@ -73,7 +70,12 @@ namespace Learn.Quizz.Services
                     Id = quizResult.Data.Id,
                     Code = quizResult.Data.Code,
                     Name = quizResult.Data.Name,
-                    Owner = quizResult.Data.CreatedBy,
+                    Owner = new Users.Models.UserReference
+                    {
+                        Name = quizResult.Data.CreatedBy.Name,
+                        Username = quizResult.Data.CreatedBy.Name,
+                        Id = quizResult.Data.CreatedBy.Id
+                    },
                     Status = quizResult.Data.Status.ToSharedModel(),
                     NumberOfQuestions = quiz.Questions.Count,
                     CurrentQuestion = GetQuestionIndex(quizResult.Data.Questions, GetCurrentQuestion(quizResult.Data.Questions))                    
@@ -107,6 +109,12 @@ namespace Learn.Quizz.Services
                         Code = quizGame.Code,
                         Name = quizGame.Name,
                         Owner = quizGame.CreatedBy,
+                        //new Users.Models.UserReference
+                        //{
+                        //    Name = quizGame.CreatedBy.Name,
+                        //    Username = quizGame.CreatedBy.Name,
+                        //    Id = quizGame.CreatedBy.Id
+                        //},
                         Status = quizGame.Status.ToSharedModel(),
                         NumberOfQuestions = quizGame.Questions.Count,
                         CurrentQuestion = GetQuestionIndex(quizGame.Questions, GetCurrentQuestion(quizGame.Questions))
@@ -142,7 +150,12 @@ namespace Learn.Quizz.Services
                     Code = joinedGame.Code,
                     Status = joinedGame.Status.ToSharedModel(),
                     Name = joinedGame.Name,
-                    Owner = joinedGame.CreatedBy,
+                    Owner = new Users.Models.UserReference
+                    {
+                        Name = joinedGame.CreatedBy.Name,
+                        Username = joinedGame.CreatedBy.Name,
+                        Id = joinedGame.CreatedBy.Id
+                    },
                     NumberOfQuestions = joinedGame.Questions.Count,
                     Id = joinedGame.Id,
                     CurrentQuestion = GetQuestionIndex(joinedGame.Questions, GetCurrentQuestion(joinedGame.Questions))                    
@@ -172,7 +185,12 @@ namespace Learn.Quizz.Services
                     Code = quizGame.Code,
                     Status = quizGame.Status.ToSharedModel(),
                     Name = quizGame.Name,
-                    Owner = quizGame.CreatedBy,
+                    Owner = new Users.Models.UserReference
+                    {
+                        Name = quizGame.CreatedBy.Name,
+                        Username = quizGame.CreatedBy.Name,
+                        Id = quizGame.CreatedBy.Id
+                    },
                     NumberOfQuestions = quizGame.Questions.Count,
                     Id = quizGame.Id,
                     CurrentQuestion = GetQuestionIndex(quizGame.Questions, GetCurrentQuestion(quizGame.Questions))
@@ -202,7 +220,12 @@ namespace Learn.Quizz.Services
                     Code = quizGame.Code,
                     Status = quizGame.Status.ToSharedModel(),
                     Name = quizGame.Name,
-                    Owner = quizGame.CreatedBy,
+                    Owner = new Users.Models.UserReference
+                    {
+                        Name = quizGame.CreatedBy.Name,
+                        Username = quizGame.CreatedBy.Name,
+                        Id = quizGame.CreatedBy.Id
+                    },
                     NumberOfQuestions = quizGame.Questions.Count,
                     Id = quizGame.Id,
                     CurrentQuestion = GetQuestionIndex(quizGame.Questions, GetCurrentQuestion(quizGame.Questions))
@@ -256,7 +279,12 @@ namespace Learn.Quizz.Services
                     Code = quizGame.Code,
                     Status = quizGame.Status.ToSharedModel(),
                     Name = quizGame.Name,
-                    Owner = quizGame.CreatedBy,
+                    Owner = new Users.Models.UserReference
+                    {
+                        Name = quizGame.CreatedBy.Name,
+                        Username = quizGame.CreatedBy.Name,
+                        Id = quizGame.CreatedBy.Id
+                    },
                     NumberOfQuestions = quizGame.Questions.Count,
                     Id = quizGame.Id,
                     CurrentQuestion = GetQuestionIndex(quizGame.Questions, GetCurrentQuestion(quizGame.Questions))
@@ -333,7 +361,12 @@ namespace Learn.Quizz.Services
                     Code = quizGame.Code,
                     Status = quizGame.Status.ToSharedModel(),
                     Name = quizGame.Name,
-                    Owner = quizGame.CreatedBy,
+                    Owner = new Users.Models.UserReference
+                    {
+                        Name = quizGame.CreatedBy.Name,
+                        Username = quizGame.CreatedBy.Name,
+                        Id = quizGame.CreatedBy.Id
+                    },
                     NumberOfQuestions = quizGame.Questions.Count,
                     Id = quizGame.Id,
                     CurrentQuestion = GetQuestionIndex(quizGame.Questions, GetCurrentQuestion(quizGame.Questions))

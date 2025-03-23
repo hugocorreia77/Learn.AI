@@ -1,5 +1,5 @@
-﻿using Learn.Core.Shared.Models.User;
-using Learn.Core.Shared.Services.Abstractions;
+﻿using Learn.Core.Shared.Services.Abstractions;
+using Learn.Users.Models;
 using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
 

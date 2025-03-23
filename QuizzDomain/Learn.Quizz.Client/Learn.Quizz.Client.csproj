@@ -2,8 +2,24 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+    <OutputType>Library</OutputType>
+    <Version>1.0.0</Version>
+    <Authors>Hugo Correia</Authors>
+    <Company>Learn AI</Company>
+    <Description>Quizz Client</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>$(SolutionDir)\LocalNuGet</PackageOutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Http\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Learn.Quizz.Models" Version="1.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.14" />
+  </ItemGroup>
+
 
 </Project>

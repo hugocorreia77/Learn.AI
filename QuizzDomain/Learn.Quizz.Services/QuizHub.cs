@@ -5,9 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Learn.Quizz.Services
 {
-    public class QuizHub(ILogger<QuizHub> logger
-        , IQuizEngine quizEngine
-        ) : Hub
+    public class QuizHub(ILogger<QuizHub> logger, IQuizEngine quizEngine) : Hub
     {
 
         public override async Task OnConnectedAsync()
@@ -16,7 +14,7 @@ namespace Learn.Quizz.Services
             {
                 logger.LogWarning("Someone tried to connect without authentication.");
                 Context.Abort();
-            }
+            }   
 
             await base.OnConnectedAsync();
         }
@@ -25,7 +23,7 @@ namespace Learn.Quizz.Services
         {
             //await quizEngine.UnjoinGame(Context.ConnectionId,) ??
 
-            base.OnDisconnectedAsync(exception);
+            await base.OnDisconnectedAsync(exception);
         }
 
         public async Task<string> JoinGame(string gameCode)

@@ -7,9 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Learn.Quizz.Models" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\AIDomain\Learn.AI.Client\Learn.AI.Client.csproj" />
     <ProjectReference Include="..\..\Core\Learn.Core.Shared\Learn.Core.Shared.csproj" />
-    <ProjectReference Include="..\Learn.Quizz.Models\Learn.Quizz.Models.csproj" />
     <ProjectReference Include="..\Learn.Quizz.Repository\Learn.Quizz.Repository.csproj" />
   </ItemGroup>
 

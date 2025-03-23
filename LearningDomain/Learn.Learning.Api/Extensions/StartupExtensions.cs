@@ -1,4 +1,5 @@
-﻿using Learn.Core.Shared.Repository.Configurations;
+﻿using Learn.Core.Shared.Http;
+using Learn.Core.Shared.Repository.Configurations;
 using Learn.Learning.Repository.MongoDb.Repository;
 using Learn.Learning.Repository.Repositories;
 using Learn.Learning.Services;
@@ -23,8 +24,9 @@ namespace Learn.Learning.Api.Extensions
         #region public static IHostApplicationBuilder AddServices(this IHostApplicationBuilder builder)
         public static IHostApplicationBuilder AddServices(this IHostApplicationBuilder builder)
         {
-
             builder.Services.AddTransient<ILearningService, LearningService>();
+            builder.Services.ConfigureCors();
+
             return builder;
         }
         #endregion

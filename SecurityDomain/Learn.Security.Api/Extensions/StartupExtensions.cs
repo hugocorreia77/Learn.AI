@@ -1,4 +1,5 @@
-﻿using Learn.Core.Shared.Repository.Configurations;
+﻿using Learn.Core.Shared.Http;
+using Learn.Core.Shared.Repository.Configurations;
 using Learn.Core.Shared.Security;
 using Learn.Core.Shared.Security.Abstractions;
 using Learn.Security.Services;
@@ -28,6 +29,8 @@ namespace Learn.Security.Api.Extensions
             builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
             builder.Services.AddTransient<IAuthTokenService, AuthTokenService>();
             builder.Services.AddTransient<ISecurityService, SecurityService>();
+            builder.Services.ConfigureCors();
+
             return builder;
         }
         #endregion

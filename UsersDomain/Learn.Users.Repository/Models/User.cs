@@ -1,5 +1,5 @@
-﻿using Learn.Core.Shared.Models.User;
-using Learn.Core.Shared.Repository;
+﻿using Learn.Core.Shared.Repository;
+using Learn.Users.Models;
 using System.Text.Json.Serialization;
 
 namespace Learn.Users.Repository.Models

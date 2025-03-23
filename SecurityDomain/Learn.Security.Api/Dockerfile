@@ -17,6 +17,11 @@ COPY ["UsersDomain/Learn.Users.Repostory.MongoDb/Learn.Users.Repository.MongoDb.
 COPY ["UsersDomain/Learn.Users.Repository/Learn.Users.Repository.csproj", "UsersDomain/Learn.Users.Repository/"]
 COPY ["SecurityDomain/Learn.Security.Models/Learn.Security.Models.csproj", "SecurityDomain/Learn.Security.Models/"]
 COPY ["SecurityDomain/Learn.Security.Repository/Learn.Security.Repository.csproj", "SecurityDomain/Learn.Security.Repository/"]
+
+# Copiar o diretório de pacotes locais para dentro da imagem Docker
+COPY ["LocalNuGet", "LocalNuGet"]
+RUN dotnet nuget add source "/src/LocalNuGet" -n "LocalPackages"
+
 RUN dotnet restore "./SecurityDomain/Learn.Security.Api/Learn.Security.Api.csproj"
 COPY . .
 WORKDIR "/src/SecurityDomain/Learn.Security.Api"

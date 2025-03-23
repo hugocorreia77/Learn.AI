@@ -1,4 +1,6 @@
-﻿namespace Learn.Quizz.Models.Quiz.Input
+﻿using System;
+
+namespace Learn.Quizz.Models.Quiz.Input
 {
     public class AnswerInput
     {

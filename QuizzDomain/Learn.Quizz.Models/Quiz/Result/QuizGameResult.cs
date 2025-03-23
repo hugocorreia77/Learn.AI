@@ -1,5 +1,6 @@
-﻿using Learn.Core.Shared.Models.User;
-using Learn.Quizz.Models.Enums;
+﻿using Learn.Quizz.Models.Enums;
+using Learn.Users.Models;
+using System;
 
 namespace Learn.Quizz.Models.Quiz.Result
 {

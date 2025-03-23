@@ -1,4 +1,4 @@
-﻿using Learn.Core.Shared.Models.User;
+﻿using Learn.Users.Models;
 using Microsoft.AspNetCore.SignalR;
 using System.IdentityModel.Tokens.Jwt;
 

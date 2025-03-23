@@ -1,5 +1,6 @@
 using Learn.AI.Client;
 using Learn.Core.Api.Extensions;
+using Learn.Core.Shared.Http;
 using Learn.Quizz.Api.Extensions;
 using Learn.Quizz.Services;
 using Learn.Quizz.Services.Interfaces;
@@ -12,7 +13,6 @@ builder.ConfigureLearningAuthentication()
         .ConfigureRedis()
         .ConfigureSignalR(true)
         ;
-
 
 builder.Services.ConfigureControllers()
                 .ConfigureConventions()
@@ -36,8 +36,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); 
 }
 
-app.UseHttpsRedirection();
+app.UseCors(CorsPolicyHelper.CorsPolicyName); // Aplicar CORS antes do SignalR
 
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -49,5 +50,7 @@ app.MapHub<QuizHub>("quizHub");
 
 var consumerService = app.Services.GetRequiredService<IQuizConsumerService>();
 await consumerService.RegisterSubscribers();
+
+await app.EnsureDatabases();
 
 app.Run();

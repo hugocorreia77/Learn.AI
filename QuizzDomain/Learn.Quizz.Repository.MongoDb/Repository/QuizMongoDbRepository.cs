@@ -1,14 +1,12 @@
 ﻿using Learn.Core.Shared.Extensions;
 using Learn.Core.Shared.Models.Response;
-using Learn.Core.Shared.Models.User;
 using Learn.Core.Shared.Repository.Configurations;
 using Learn.Quizz.Repository.Models;
 using Learn.Quizz.Repository.Repositories;
+using Learn.Users.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using System.Numerics;
-using System.Threading;
 
 namespace Learn.Quizz.Repository.MongoDb.Repository
 {
@@ -17,6 +15,7 @@ namespace Learn.Quizz.Repository.MongoDb.Repository
         #region Properties
         protected ILogger<QuizMongoDbRepository> _logger;
         private const string COLLECTION_NAME = "Quiz";
+        private readonly IMongoDatabase _database;
         private readonly IMongoCollection<QuizzGame> QuizzGames;
         private readonly InsertOneOptions InsertOneOptions = new()
         {
@@ -25,25 +24,24 @@ namespace Learn.Quizz.Repository.MongoDb.Repository
         #endregion
 
         #region Constructor
-        public QuizMongoDbRepository(ILogger<QuizMongoDbRepository> logger, IOptionsSnapshot<RepositoryConfiguration> settings)
+        public QuizMongoDbRepository(ILogger<QuizMongoDbRepository> logger, IOptions<RepositoryConfiguration> settings)
         {
             _logger = logger;
             var client = new MongoClient(settings.Value.ConnectionString);
-            var database = client.GetDatabase(settings.Value.Database);
-            EnsureCollection(database).Wait();
-            QuizzGames = database.GetCollection<QuizzGame>(COLLECTION_NAME);
+            _database = client.GetDatabase(settings.Value.Database);
+            QuizzGames = _database.GetCollection<QuizzGame>(COLLECTION_NAME);
         }
         #endregion
 
-        #region private async Task EnsureCollection(IMongoDatabase database)
-        private async Task EnsureCollection(IMongoDatabase database)
+        #region private async Task EnsureCollection()
+        public async Task EnsureCollection()
         {
-            var collections = await database.ListCollectionNamesAsync();
+            var collections = await _database.ListCollectionNamesAsync();
             var collectionList = await collections.ToListAsync();
 
             if (!collectionList.Contains(COLLECTION_NAME))
             {
-                await database.CreateCollectionAsync(COLLECTION_NAME);
+                await _database.CreateCollectionAsync(COLLECTION_NAME);
                 _logger.LogInformation($"Collection '{COLLECTION_NAME}' created on MongoDB.");
             }
             else

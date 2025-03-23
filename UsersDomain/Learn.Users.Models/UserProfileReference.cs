@@ -1,4 +1,4 @@
-﻿namespace Learn.Core.Shared.Models.User
+﻿namespace Learn.Users.Models
 {
     public class UserProfileReference : UserReference
     {

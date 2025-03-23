@@ -1,4 +1,6 @@
-﻿namespace Learn.Quizz.Models.Question
+﻿using System;
+
+namespace Learn.Quizz.Models.Question
 {
     public class QuestionOptionReference
     {

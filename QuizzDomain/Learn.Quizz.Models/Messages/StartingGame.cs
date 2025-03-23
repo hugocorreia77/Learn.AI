@@ -1,4 +1,6 @@
-﻿namespace Learn.Quizz.Models.Messages
+﻿using System;
+
+namespace Learn.Quizz.Models.Messages
 {
     public class StartingGame
     {

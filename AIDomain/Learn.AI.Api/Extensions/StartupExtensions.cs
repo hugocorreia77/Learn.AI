@@ -3,6 +3,7 @@ using Learn.AI.Repository.Repositories;
 using Learn.AI.Services.Providers.Gpt;
 using Learn.AI.Services.Providers.Gpt.Configuration;
 using Learn.AI.Services.Providers.Interfaces;
+using Learn.Core.Shared.Http;
 using Learn.Core.Shared.Repository.Configurations;
 
 namespace Learn.AI.Api.Extensions
@@ -29,6 +30,8 @@ namespace Learn.AI.Api.Extensions
             );
 
             builder.Services.AddTransient<IAIProvider, OpenAIServiceProvider>();
+            builder.Services.ConfigureCors();
+
             return builder;
         }
         #endregion
