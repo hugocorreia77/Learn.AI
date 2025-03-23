@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Learn.Security.App</RootNamespace>
+
+    <IsPackable>true</IsPackable>
+    <Version>1.0.3</Version>
+    <Authors>Hugo Correia</Authors>
+    <Company>Learn AI</Company>
+    <Description>Learn Security App</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>$(SolutionDir)\LocalNuGet</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Learn.Core.Shared.App" Version="1.0.0" />
+    <PackageReference Include="Learn.Security.Client" Version="1.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

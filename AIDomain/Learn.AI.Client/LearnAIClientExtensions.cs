@@ -25,10 +25,10 @@ namespace Learn.AI.Client
                 var serviceProvider = services.BuildServiceProvider();
                 var httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
                 var bearerToken = httpContextAccessor?.HttpContext?.Request
-                                      .Headers.Authorization.FirstOrDefault(h => h != null  
+                                      .Headers["Authorization"].FirstOrDefault(h => h != null  
                                                                             && h.StartsWith("bearer ", StringComparison.InvariantCultureIgnoreCase)) ?? string.Empty;
 
-                var language = httpContextAccessor?.HttpContext?.Request.Headers.AcceptLanguage.FirstOrDefault() ?? "pt-PT";
+                var language = httpContextAccessor?.HttpContext?.Request.Headers["Accept-Language"].FirstOrDefault() ?? "pt-PT";
 
                 client.BaseAddress = new Uri(config.Url);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");

@@ -1,4 +1,6 @@
-﻿namespace Learn.Core.Shared.Models.Response
+﻿using System.Collections.Generic;
+
+namespace Learn.Core.Shared.Models.Response
 {
     public class BaseResponse
     {

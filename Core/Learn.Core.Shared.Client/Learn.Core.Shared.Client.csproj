@@ -2,20 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <OutputType>Library</OutputType>
-    <Version>1.0.0</Version>
+    <Version>1.0.5</Version>
     <Authors>Hugo Correia</Authors>
     <Company>Learn AI</Company>
-    <Description>Learn Security Models</Description>
+    <Description>Learn Core Shared Client</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>$(SolutionDir)\LocalNuGet</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Result\" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.3" />
   </ItemGroup>
 
 </Project>

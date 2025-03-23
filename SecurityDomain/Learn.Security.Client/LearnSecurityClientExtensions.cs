@@ -23,7 +23,7 @@ namespace Learn.Security.Client
             {
                 var serviceProvider = services.BuildServiceProvider();
                 var httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
-                var language = httpContextAccessor?.HttpContext?.Request.Headers.AcceptLanguage.FirstOrDefault() ?? "pt-PT";
+                var language = httpContextAccessor?.HttpContext?.Request.Headers["Accept-Language"].FirstOrDefault() ?? "pt-PT";
 
                 client.BaseAddress = new Uri(config.Url);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");

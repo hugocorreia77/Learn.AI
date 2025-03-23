@@ -2,20 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <OutputType>Library</OutputType>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Hugo Correia</Authors>
     <Company>Learn AI</Company>
-    <Description>Learn Security Models</Description>
+    <Description>Learn Core Shared Models</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>$(SolutionDir)\LocalNuGet</PackageOutputPath>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Result\" />
-  </ItemGroup>
 
 </Project>

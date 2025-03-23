@@ -4,11 +4,23 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+    <OutputType>Library</OutputType>
+    <Version>1.0.1</Version>
+    <Authors>Hugo Correia</Authors>
+    <Company>Learn AI</Company>
+    <Description>Learn Security Client</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>$(SolutionDir)\LocalNuGet</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Learn.Core.Shared\Learn.Core.Shared.csproj" />
-    <ProjectReference Include="..\Learn.Security.Models\Learn.Security.Models.csproj" />
+    <PackageReference Include="Learn.Core.Shared.Client" Version="1.0.4" />
+    <PackageReference Include="Learn.Core.Shared.Models" Version="1.0.1" />
+    <PackageReference Include="Learn.Security.Models" Version="1.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
 </Project>
