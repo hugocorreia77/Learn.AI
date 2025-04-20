@@ -5,50 +5,59 @@
 @using Learn.Security.App.Services.Abstractions
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
-@inject IAuthenticationService authenticationService
-@inject NavigationManager Navigation
+@inject AuthenticationPageViewModel Context
 
-<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
+<EditForm EditContext="@Context.EditContext" OnSubmit="Context.HandleLoginSubmission">
+ 
     <section class="vh-100 bg-transparent">
         <div class="container my-auto h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-12 col-md-8 col-lg-6 col-xl-5">
                     <div class="card bg-transparent text-white border-0">
                         <div class="card-body p-5 text-center">
-
                             <div class="mb-md-5 mt-md-4 pb-5">
-
                                 <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
                                 <p class="text-white-50 mb-5">Please enter your login and password!</p>
 
                                 <div data-mdb-input-init class="form-outline form-white mb-4">
                                     <label for="username">Username</label>
-                                    <InputText id="username" class="form-control bg-transparent text-white" @bind-Value="loginModel.Username" />
+                                    <InputText id="username" 
+                                        class="form-control bg-transparent text-white"
+                                      @bind-Value="Context.LoginModel.Username"
+                                        disabled="@Context.IsBusy" />
                                 </div>
 
                                 <div data-mdb-input-init class="form-outline form-white mb-4">
                                     <label class="form-label" for="password">Password</label>
-                                    <InputText id="password" type="password" class="form-control bg-transparent text-white" @bind-Value="loginModel.Password" />
+                                    <InputText id="password" 
+                                        type="password" 
+                                        class="form-control bg-transparent text-white"
+                                      @bind-Value="Context.LoginModel.Password"
+                                        disabled="@Context.IsBusy" />
                                 </div>
+                                <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="@(Context.IsBusy ? "" : "#!")">Forgot password?</a></p>
 
-                                <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
+                                <DataAnnotationsValidator />
+                                <ValidationSummary />
 
-                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
+                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-light btn-lg px-5" type="submit" disabled="@Context.IsBusy">
+                                    @if (Context.IsBusy)
+                                    {
+                                        <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                    }
+                                    <span>Login</span>
+                                </button>
 
                                 <div class="d-flex justify-content-center text-center mt-4 pt-1">
-                                    <a href="#!" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
-                                    <a href="#!" class="text-white"><i class="fab fa-twitter fa-lg mx-4 px-2"></i></a>
-                                    <a href="#!" class="text-white"><i class="fab fa-google fa-lg"></i></a>
+                                    <a href="@(Context.IsBusy ? "" : "#!")" class="text-white" ><i class="fab fa-facebook-f fa-lg"></i></a>
+                                    <a href="@(Context.IsBusy ? "" : "#!")" class="text-white"><i class="fab fa-twitter fa-lg mx-4 px-2"></i></a>
+                                    <a href="@(Context.IsBusy ? "" : "#!")" class="text-white"><i class="fab fa-google fa-lg"></i></a>
                                 </div>
-
                             </div>
 
                             <div>
                                 <p class="mb-0">
-                                    Don't have an account? <a href="#!" class="text-white-50 fw-bold">Sign Up</a>
+                                    Don't have an account? <a href="@(Context.IsBusy ? "" : "#!")" class="text-white-50 fw-bold" disabled="@Context.IsBusy">Sign Up</a>
                                 </p>
                             </div>
 
@@ -58,55 +67,24 @@
             </div>
         </div>
     </section>
-
 </EditForm>
 
 <style>
     .gradient-custom {
-    /* fallback for old browsers */
-    background: #6a11cb;
-    /* Chrome 10-25, Safari 5.1-6 */
-    background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
-    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
+        /* fallback for old browsers */
+        background: #6a11cb;
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
     }
+
+    .validation-message {
+        list-style-type: none;
+    }
+
 </style>
 
 @code {
-    private LoginModel loginModel = new LoginModel();
-
-    private async Task HandleLogin()
-    {
-        try
-        {
-            var response = await authenticationService.AuthenticateAsync(loginModel.Username, loginModel.Password);
-
-            if (response.Success)
-            {
-                // Redireciona para a página inicial ou página protegida
-                Navigation.NavigateTo("/");
-            }
-            else
-            {
-                // Exibe erro (mensagem de credenciais inválidas, por exemplo)
-                Console.WriteLine("Erro ao fazer login.");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erro: {ex.Message}");
-        }
-    }
-
-    public class LoginModel
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
-
-    public class AuthResult
-    {
-        public string Data { get; set; }
-        public bool Success { get; set; }
-    }
+    
 }

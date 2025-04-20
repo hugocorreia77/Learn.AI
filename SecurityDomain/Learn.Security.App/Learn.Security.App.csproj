@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Learn.Core.Shared.App" Version="1.0.0" />
+    <PackageReference Include="Learn.Core.Shared.App" Version="1.0.3" />
     <PackageReference Include="Learn.Security.Client" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.14" />

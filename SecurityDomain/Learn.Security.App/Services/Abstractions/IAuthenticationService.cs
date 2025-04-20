@@ -7,5 +7,7 @@ namespace Learn.Security.App.Services.Abstractions
     public interface IAuthenticationService
     {
         Task<BaseResponse> AuthenticateAsync(string username, string password, CancellationToken cancellationToken = default);
+        Task<BaseResponse> LogoutAsync(CancellationToken cancellationToken = default);
+        Task<string> CurrentUserNameAsync();
     }
 }

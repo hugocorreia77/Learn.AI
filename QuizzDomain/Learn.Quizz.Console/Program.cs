@@ -24,6 +24,7 @@ internal class Program
             Console.WriteLine($"password:");
             var password = Console.ReadLine();
 
+            // Update the logger factory creation to ensure the AddConsole extension method is available
             using ILoggerFactory loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
             ILogger<LearnSecurityClient> loggerSec = loggerFactory.CreateLogger<LearnSecurityClient>();
 
