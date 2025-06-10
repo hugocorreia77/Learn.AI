@@ -27,3 +27,11 @@ stages:
         dockerfile: '$(Build.SourcesDirectory)/AIDomain/Learn.AI.Api/Dockerfile'
         tags: |
           $(tag)
+  - job: Pack
+    displayName: Pack nuget
+    steps:
+    - task: NuGetCommand@2
+      inputs:
+        command: 'pack'
+        packagesToPack: '**/*.csproj'
+        versioningScheme: 'off'
