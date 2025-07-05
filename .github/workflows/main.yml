@@ -9,6 +9,6 @@ jobs:
     uses: hugocorreia77/IaC/.github/workflows/main.yml@main
     with:
       project-name: Learn.Core.Shared.Models
-      project-path: Core/Learn.Core.Shared.Models/
+      project-path: Core/Learn.Core.Shared.Models
 
       
