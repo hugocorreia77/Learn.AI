@@ -3,7 +3,8 @@ name: Use Template
 on:
   push:
     branches: [ master ]
-
+  workflow_dispatch:
+    
 jobs:
   use-template:
     uses: hugocorreia77/IaC/.github/workflows/main.yml@main
