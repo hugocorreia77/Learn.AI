@@ -1,0 +1,11 @@
+name: Use Template
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  use-template:
+    uses: your-org/workflow-templates/.github/workflows/build.yml@main
+    with:
+      project-name: Learn.Core.Shared
