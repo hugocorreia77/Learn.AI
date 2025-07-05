@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace Learn.Core.Shared.Services
 {
+
     public class UserContextService(IHttpContextAccessor httpContextAccessor) : IUserContextService
     {
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
