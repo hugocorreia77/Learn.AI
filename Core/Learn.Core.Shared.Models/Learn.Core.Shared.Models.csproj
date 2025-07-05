@@ -9,7 +9,6 @@
     <Company>Learn AI</Company>
     <Description>Learn Core Shared Models</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageOutputPath>$(SolutionDir)\LocalNuGet</PackageOutputPath>
   </PropertyGroup>
 
 </Project>
