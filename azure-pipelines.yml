@@ -35,3 +35,4 @@ stages:
         command: 'pack'
         packagesToPack: '**/*.csproj'
         versioningScheme: 'off'
+
