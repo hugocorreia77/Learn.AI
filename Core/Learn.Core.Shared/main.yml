@@ -6,6 +6,6 @@ on:
 
 jobs:
   use-template:
-    uses: your-org/workflow-templates/.github/workflows/build.yml@main
+    uses: hugocorreia77/IaC/.github/workflows/template-build-net8.yml@main
     with:
       project-name: Learn.Core.Shared
