@@ -8,7 +8,7 @@ jobs:
   use-template:
     uses: hugocorreia77/IaC/.github/workflows/main.yml@main
     with:
-      project-name: Learn.Core.Shared
-      project-path: Core/Learn.Core.Shared.Models/Learn.Core.Shared.Models
+      project-name: Learn.Core.Shared.Models
+      project-path: Core/Learn.Core.Shared.Models/
 
       
