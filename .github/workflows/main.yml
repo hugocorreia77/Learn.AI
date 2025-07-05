@@ -10,3 +10,5 @@ jobs:
     with:
       project-name: Learn.Core.Shared
       project-path: Core/Learn.Core.Shared/Learn.Core.Shared.csproj
+
+      
