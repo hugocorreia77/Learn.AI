@@ -10,5 +10,4 @@ jobs:
     with:
       project-name: Learn.Core.Shared.Models
       project-path: Core/Learn.Core.Shared.Models
-
       
