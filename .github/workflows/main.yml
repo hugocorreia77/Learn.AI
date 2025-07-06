@@ -4,6 +4,10 @@ on:
   push:
     branches: [ master ]
   workflow_dispatch:
+    inputs:
+      environment:
+        type: environment
+        description: Select the environment
     
 jobs:
   use-template:
@@ -11,4 +15,7 @@ jobs:
     with:
       project-name: Learn.Core.Shared.Models
       project-path: Core/Learn.Core.Shared.Models
+    secrets:
+      NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       
