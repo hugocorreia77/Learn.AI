@@ -3,6 +3,9 @@ name: Generate Learn.Core.Shared.Models
 on:
   push:
     branches: [ master ]
+    paths:
+      - 'Core/Learn.Core.Shared.Models/**'
+      - '.github/workflows/main.yml'
   workflow_dispatch:
     inputs:
       environment:
