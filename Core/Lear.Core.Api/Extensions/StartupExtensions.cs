@@ -171,6 +171,7 @@ namespace Learn.Core.Api.Extensions
                     //};
                 });
 
+            
             builder.Services.AddAuthorization();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IUserContextService, UserContextService>();
