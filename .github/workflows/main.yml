@@ -1,4 +1,4 @@
-name: Use Template
+name: Generate Learn.Core.Shared.Models
 
 on:
   push:
